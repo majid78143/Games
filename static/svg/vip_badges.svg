@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <!-- VIP1 -->
+  <symbol id="vip-1" viewBox="0 0 60 70">
+    <defs><linearGradient id="v1g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1A6FFF"/><stop offset="100%" stop-color="#0A4FCC"/></linearGradient></defs>
+    <path d="M30 2 L55 16 L55 44 L30 68 L5 44 L5 16 Z" fill="url(#v1g)" stroke="#C9A84C" stroke-width="1.5"/>
+    <text x="30" y="38" text-anchor="middle" font-family="Arial" font-size="10" font-weight="900" fill="white">VIP</text>
+    <text x="30" y="52" text-anchor="middle" font-family="Arial" font-size="14" font-weight="900" fill="#C9A84C">1</text>
+    <circle cx="30" cy="18" r="6" fill="#C9A84C" opacity="0.8"/>
+  </symbol>
+  <!-- VIP2 -->
+  <symbol id="vip-2" viewBox="0 0 60 70">
+    <defs><linearGradient id="v2g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2A7FFF"/><stop offset="100%" stop-color="#0A5FDD"/></linearGradient></defs>
+    <path d="M30 2 L55 16 L55 44 L30 68 L5 44 L5 16 Z" fill="url(#v2g)" stroke="#D4B060" stroke-width="1.5"/>
+    <circle cx="30" cy="18" r="7" fill="none" stroke="#D4B060" stroke-width="1.5"/>
+    <text x="30" y="38" text-anchor="middle" font-family="Arial" font-size="10" font-weight="900" fill="white">VIP</text>
+    <text x="30" y="52" text-anchor="middle" font-family="Arial" font-size="14" font-weight="900" fill="#D4B060">2</text>
+  </symbol>
+  <!-- VIP3 -->
+  <symbol id="vip-3" viewBox="0 0 60 70">
+    <defs><linearGradient id="v3g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3A8FFF"/><stop offset="100%" stop-color="#1A5FCC"/></linearGradient></defs>
+    <path d="M30 2 L55 16 L55 44 L30 68 L5 44 L5 16 Z" fill="url(#v3g)" stroke="#E8C070" stroke-width="2"/>
+    <path d="M22 14 L26 20 L30 12 L34 20 L38 14 L36 22 H24 Z" fill="#E8C070"/>
+    <text x="30" y="40" text-anchor="middle" font-family="Arial" font-size="10" font-weight="900" fill="white">VIP</text>
+    <text x="30" y="54" text-anchor="middle" font-family="Arial" font-size="14" font-weight="900" fill="#E8C070">3</text>
+  </symbol>
+  <!-- VIP4 -->
+  <symbol id="vip-4" viewBox="0 0 60 70">
+    <defs><linearGradient id="v4g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#9B59B6"/><stop offset="100%" stop-color="#6C3483"/></linearGradient></defs>
+    <path d="M30 2 L55 16 L55 44 L30 68 L5 44 L5 16 Z" fill="url(#v4g)" stroke="#F0D090" stroke-width="2"/>
+    <path d="M22 14 L26 20 L30 12 L34 20 L38 14 L36 22 H24 Z" fill="#F0D090"/>
+    <circle cx="30" cy="30" r="5" fill="#F0D090" opacity="0.3"/>
+    <text x="30" y="42" text-anchor="middle" font-family="Arial" font-size="10" font-weight="900" fill="white">VIP</text>
+    <text x="30" y="56" text-anchor="middle" font-family="Arial" font-size="14" font-weight="900" fill="#F0D090">4</text>
+  </symbol>
+  <!-- VIP5 -->
+  <symbol id="vip-5" viewBox="0 0 60 70">
+    <defs><linearGradient id="v5g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E74C3C"/><stop offset="100%" stop-color="#B03A2E"/></linearGradient></defs>
+    <path d="M30 2 L55 16 L55 44 L30 68 L5 44 L5 16 Z" fill="url(#v5g)" stroke="#F0D090" stroke-width="2"/>
+    <path d="M22 14 L26 20 L30 12 L34 20 L38 14 L36 22 H24 Z" fill="#F0D090"/>
+    <rect x="22" y="26" width="16" height="2" fill="#F0D090" opacity="0.6"/>
+    <text x="30" y="42" text-anchor="middle" font-family="Arial" font-size="10" font-weight="900" fill="white">VIP</text>
+    <text x="30" y="56" text-anchor="middle" font-family="Arial" font-size="14" font-weight="900" fill="#F0D090">5</text>
+  </symbol>
+  <!-- VIP6 -->
+  <symbol id="vip-6" viewBox="0 0 60 70">
+    <defs><linearGradient id="v6g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F39C12"/><stop offset="100%" stop-color="#B7770D"/></linearGradient></defs>
+    <path d="M30 2 L55 16 L55 44 L30 68 L5 44 L5 16 Z" fill="url(#v6g)" stroke="white" stroke-width="2"/>
+    <path d="M22 14 L26 20 L30 12 L34 20 L38 14 L36 22 H24 Z" fill="white"/>
+    <circle cx="30" cy="30" r="4" fill="white" opacity="0.4"/>
+    <circle cx="30" cy="30" r="2" fill="white" opacity="0.7"/>
+    <text x="30" y="44" text-anchor="middle" font-family="Arial" font-size="10" font-weight="900" fill="white">VIP</text>
+    <text x="30" y="58" text-anchor="middle" font-family="Arial" font-size="14" font-weight="900" fill="white">6</text>
+  </symbol>
+  <!-- VIP7 -->
+  <symbol id="vip-7" viewBox="0 0 60 70">
+    <defs>
+      <linearGradient id="v7g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0D1B3E"/><stop offset="100%" stop-color="#1A6FFF"/></linearGradient>
+    </defs>
+    <path d="M30 2 L55 16 L55 44 L30 68 L5 44 L5 16 Z" fill="url(#v7g)" stroke="#C9A84C" stroke-width="2.5"/>
+    <path d="M22 12 L26 19 L30 10 L34 19 L38 12 L36 23 H24 Z" fill="#C9A84C"/>
+    <path d="M24 26 L36 26 L34 35 L30 38 L26 35 Z" fill="#C9A84C" opacity="0.3"/>
+    <text x="30" y="46" text-anchor="middle" font-family="Arial" font-size="10" font-weight="900" fill="white">VIP</text>
+    <text x="30" y="60" text-anchor="middle" font-family="Arial" font-size="14" font-weight="900" fill="#C9A84C">7</text>
+  </symbol>
+  <!-- VIP8 -->
+  <symbol id="vip-8" viewBox="0 0 60 70">
+    <defs>
+      <linearGradient id="v8g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1A1A2E"/><stop offset="100%" stop-color="#E8192C"/></linearGradient>
+    </defs>
+    <path d="M30 2 L56 17 L56 45 L30 68 L4 45 L4 17 Z" fill="url(#v8g)" stroke="#C9A84C" stroke-width="2.5"/>
+    <path d="M21 11 L26 19 L30 9 L34 19 L39 11 L36 24 H24 Z" fill="#C9A84C"/>
+    <rect x="21" y="28" width="18" height="2.5" rx="1" fill="#C9A84C" opacity="0.7"/>
+    <circle cx="30" cy="36" r="4" fill="#C9A84C" opacity="0.5"/>
+    <text x="30" y="48" text-anchor="middle" font-family="Arial" font-size="10" font-weight="900" fill="white">VIP</text>
+    <text x="30" y="62" text-anchor="middle" font-family="Arial" font-size="14" font-weight="900" fill="#C9A84C">8</text>
+  </symbol>
+  <!-- VIP9 -->
+  <symbol id="vip-9" viewBox="0 0 60 70">
+    <defs>
+      <linearGradient id="v9g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0A0A1A"/><stop offset="100%" stop-color="#6C3483"/></linearGradient>
+    </defs>
+    <path d="M30 2 L57 17 L57 46 L30 69 L3 46 L3 17 Z" fill="url(#v9g)" stroke="url(#v9stroke)" stroke-width="3"/>
+    <defs><linearGradient id="v9stroke" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F0D090"/><stop offset="100%" stop-color="#C9A84C"/></linearGradient></defs>
+    <path d="M20 10 L25 19 L30 8 L35 19 L40 10 L37 25 H23 Z" fill="#F0D090"/>
+    <path d="M23 29 L37 29 L35 40 L30 44 L25 40 Z" fill="#F0D090" opacity="0.4"/>
+    <text x="30" y="50" text-anchor="middle" font-family="Arial" font-size="10" font-weight="900" fill="white">VIP</text>
+    <text x="30" y="64" text-anchor="middle" font-family="Arial" font-size="14" font-weight="900" fill="#F0D090">9</text>
+  </symbol>
+  <!-- VIP10 -->
+  <symbol id="vip-10" viewBox="0 0 60 70">
+    <defs>
+      <linearGradient id="v10g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#050A14"/><stop offset="50%" stop-color="#1A6FFF"/><stop offset="100%" stop-color="#E8192C"/></linearGradient>
+      <filter id="v10glow"><feGaussianBlur stdDeviation="2" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/></filter>
+    </defs>
+    <path d="M30 1 L58 17 L58 47 L30 69 L2 47 L2 17 Z" fill="url(#v10g)" stroke="#FFD700" stroke-width="3"/>
+    <path d="M19 9 L24 19 L30 7 L36 19 L41 9 L38 26 H22 Z" fill="#FFD700" filter="url(#v10glow)"/>
+    <path d="M22 30 L38 30 L36 42 L30 46 L24 42 Z" fill="#FFD700" opacity="0.5"/>
+    <circle cx="30" cy="38" r="5" fill="#FFD700" opacity="0.3"/>
+    <text x="30" y="51" text-anchor="middle" font-family="Arial" font-size="10" font-weight="900" fill="white">VIP</text>
+    <text x="30" y="65" text-anchor="middle" font-family="Arial" font-size="14" font-weight="900" fill="#FFD700">10</text>
+  </symbol>
+</svg>

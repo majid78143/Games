@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <!-- Bronze Frame -->
+  <symbol id="frame-bronze" viewBox="0 0 110 110">
+    <defs><linearGradient id="fr-brz" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#CD7F32"/><stop offset="100%" stop-color="#8B4513"/></linearGradient></defs>
+    <circle cx="55" cy="55" r="52" fill="none" stroke="url(#fr-brz)" stroke-width="6"/>
+    <circle cx="55" cy="55" r="46" fill="none" stroke="#A0522D" stroke-width="1"/>
+    <circle cx="55" cy="3" r="4" fill="#CD7F32"/>
+    <circle cx="55" cy="107" r="4" fill="#CD7F32"/>
+    <circle cx="3" cy="55" r="4" fill="#CD7F32"/>
+    <circle cx="107" cy="55" r="4" fill="#CD7F32"/>
+  </symbol>
+  <!-- Silver Frame -->
+  <symbol id="frame-silver" viewBox="0 0 110 110">
+    <defs><linearGradient id="fr-slv" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#C0C0C0"/><stop offset="100%" stop-color="#707070"/></linearGradient></defs>
+    <circle cx="55" cy="55" r="52" fill="none" stroke="url(#fr-slv)" stroke-width="6"/>
+    <circle cx="55" cy="55" r="47" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4 4"/>
+    <polygon points="55,3 58,8 55,6 52,8" fill="#C0C0C0"/>
+    <polygon points="55,107 58,102 55,104 52,102" fill="#C0C0C0"/>
+    <polygon points="3,55 8,52 6,55 8,58" fill="#C0C0C0"/>
+    <polygon points="107,55 102,52 104,55 102,58" fill="#C0C0C0"/>
+  </symbol>
+  <!-- Gold Frame -->
+  <symbol id="frame-gold" viewBox="0 0 110 110">
+    <defs><linearGradient id="fr-gld" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFD700"/><stop offset="100%" stop-color="#B8860B"/></linearGradient></defs>
+    <circle cx="55" cy="55" r="52" fill="none" stroke="url(#fr-gld)" stroke-width="7"/>
+    <circle cx="55" cy="55" r="46" fill="none" stroke="#DAA520" stroke-width="1.5"/>
+    <path d="M52 3 L55 1 L58 3 L55 7 Z" fill="#FFD700"/>
+    <path d="M52 107 L55 109 L58 107 L55 103 Z" fill="#FFD700"/>
+    <path d="M3 52 L1 55 L3 58 L7 55 Z" fill="#FFD700"/>
+    <path d="M107 52 L109 55 L107 58 L103 55 Z" fill="#FFD700"/>
+  </symbol>
+  <!-- Platinum Frame -->
+  <symbol id="frame-platinum" viewBox="0 0 110 110">
+    <defs><linearGradient id="fr-plt" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E5E4E2"/><stop offset="100%" stop-color="#9EA0A1"/></linearGradient></defs>
+    <circle cx="55" cy="55" r="52" fill="none" stroke="url(#fr-plt)" stroke-width="7"/>
+    <circle cx="55" cy="55" r="46" fill="none" stroke="white" stroke-width="2"/>
+    <circle cx="55" cy="55" r="49" fill="none" stroke="#BCC0C4" stroke-width="1" stroke-dasharray="2 6"/>
+  </symbol>
+  <!-- Diamond Frame -->
+  <symbol id="frame-diamond" viewBox="0 0 110 110">
+    <defs><linearGradient id="fr-dia" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#B9F2FF"/><stop offset="100%" stop-color="#1A6FFF"/></linearGradient></defs>
+    <circle cx="55" cy="55" r="52" fill="none" stroke="url(#fr-dia)" stroke-width="7"/>
+    <circle cx="55" cy="55" r="47" fill="none" stroke="#00BFFF" stroke-width="1.5"/>
+    <polygon points="55,3 59,9 55,7 51,9" fill="#B9F2FF"/>
+    <polygon points="55,107 59,101 55,103 51,101" fill="#B9F2FF"/>
+    <polygon points="3,55 9,51 7,55 9,59" fill="#B9F2FF"/>
+    <polygon points="107,55 101,51 103,55 101,59" fill="#B9F2FF"/>
+    <circle cx="55" cy="3" r="3" fill="#00BFFF"/>
+    <circle cx="55" cy="107" r="3" fill="#00BFFF"/>
+    <circle cx="3" cy="55" r="3" fill="#00BFFF"/>
+    <circle cx="107" cy="55" r="3" fill="#00BFFF"/>
+  </symbol>
+  <!-- Master Frame -->
+  <symbol id="frame-master" viewBox="0 0 110 110">
+    <defs><linearGradient id="fr-mst" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#9B59B6"/><stop offset="100%" stop-color="#4A235A"/></linearGradient></defs>
+    <circle cx="55" cy="55" r="52" fill="none" stroke="url(#fr-mst)" stroke-width="8"/>
+    <circle cx="55" cy="55" r="46" fill="none" stroke="#D7BDE2" stroke-width="1.5"/>
+    <circle cx="55" cy="3" r="4" fill="#9B59B6"/>
+    <circle cx="55" cy="107" r="4" fill="#9B59B6"/>
+    <circle cx="3" cy="55" r="4" fill="#9B59B6"/>
+    <circle cx="107" cy="55" r="4" fill="#9B59B6"/>
+    <circle cx="16" cy="16" r="3" fill="#6C3483"/>
+    <circle cx="94" cy="16" r="3" fill="#6C3483"/>
+    <circle cx="16" cy="94" r="3" fill="#6C3483"/>
+    <circle cx="94" cy="94" r="3" fill="#6C3483"/>
+  </symbol>
+  <!-- Elite Frame -->
+  <symbol id="frame-elite" viewBox="0 0 110 110">
+    <defs><linearGradient id="fr-elt" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E74C3C"/><stop offset="100%" stop-color="#7B241C"/></linearGradient></defs>
+    <circle cx="55" cy="55" r="52" fill="none" stroke="url(#fr-elt)" stroke-width="8"/>
+    <circle cx="55" cy="55" r="47" fill="none" stroke="#F1948A" stroke-width="1.5"/>
+    <path d="M53 2 L55 0 L57 2 L55 8 Z" fill="#E74C3C"/>
+    <path d="M53 108 L55 110 L57 108 L55 102 Z" fill="#E74C3C"/>
+    <path d="M2 53 L0 55 L2 57 L8 55 Z" fill="#E74C3C"/>
+    <path d="M108 53 L110 55 L108 57 L102 55 Z" fill="#E74C3C"/>
+  </symbol>
+  <!-- Champion Frame -->
+  <symbol id="frame-champion" viewBox="0 0 110 110">
+    <defs><linearGradient id="fr-chp" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F39C12"/><stop offset="100%" stop-color="#7D6608"/></linearGradient></defs>
+    <circle cx="55" cy="55" r="52" fill="none" stroke="url(#fr-chp)" stroke-width="9"/>
+    <circle cx="55" cy="55" r="46" fill="none" stroke="#F8C471" stroke-width="1.5"/>
+    <circle cx="55" cy="55" r="50" fill="none" stroke="#F39C12" stroke-width="1" stroke-dasharray="6 3"/>
+    <circle cx="55" cy="4" r="4" fill="#F39C12"/>
+    <circle cx="55" cy="106" r="4" fill="#F39C12"/>
+    <circle cx="4" cy="55" r="4" fill="#F39C12"/>
+    <circle cx="106" cy="55" r="4" fill="#F39C12"/>
+  </symbol>
+  <!-- Legend Frame -->
+  <symbol id="frame-legend" viewBox="0 0 110 110">
+    <defs>
+      <linearGradient id="fr-lgd" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1A6FFF"/><stop offset="50%" stop-color="#C9A84C"/><stop offset="100%" stop-color="#E8192C"/></linearGradient>
+    </defs>
+    <circle cx="55" cy="55" r="52" fill="none" stroke="url(#fr-lgd)" stroke-width="10"/>
+    <circle cx="55" cy="55" r="46" fill="none" stroke="#FFD700" stroke-width="2"/>
+    <circle cx="55" cy="55" r="50" fill="none" stroke="#FFD700" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
+    <path d="M53 1 L55 0 L57 1 L55 9 Z" fill="#FFD700"/>
+    <path d="M53 109 L55 110 L57 109 L55 101 Z" fill="#FFD700"/>
+    <path d="M1 53 L0 55 L1 57 L9 55 Z" fill="#FFD700"/>
+    <path d="M109 53 L110 55 L109 57 L101 55 Z" fill="#FFD700"/>
+    <circle cx="18" cy="18" r="3" fill="#C9A84C"/>
+    <circle cx="92" cy="18" r="3" fill="#C9A84C"/>
+    <circle cx="18" cy="92" r="3" fill="#C9A84C"/>
+    <circle cx="92" cy="92" r="3" fill="#C9A84C"/>
+  </symbol>
+</svg>
