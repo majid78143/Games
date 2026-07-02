@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="admin-layout">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div style="padding:16px;border-bottom:1px solid var(--border)">
+      <img src="/static/svg/logo.svg" alt="19GameVIP" style="height:28px">
+      <div class="text-muted text-xs" style="margin-top:4px">Admin Panel</div>
+    </div>
+    {% for href, icon, label in [('/admin/','admin','Dashboard'),('/admin/users','profile','Users'),('/admin/payments','payment','Payments'),('/admin/banners','image','Banners'),('/admin/events','events','Events'),('/admin/creators','creator','Creators'),('/admin/coupons','coupon','Coupons'),('/admin/settings','settings','Settings'),('/admin/logs','history','Logs')] %}
+    <a href="{{ href }}" class="admin-link {{ 'active' if request.path == href else '' }}">
+      <svg width="18" height="18" viewBox="0 0 24 24"><use href="#icon-{{ icon }}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      {{ label }}
+    </a>
+    {% endfor %}
+    <a href="/" class="admin-link" style="margin-top:auto">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V21a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/></svg>
+      View Site
+    </a>
+  </aside>
+
+  <!-- Content -->
+  <div class="admin-content" style="overflow-y:auto;flex:1">
+    <h1 style="font-size:22px;font-weight:900;margin-bottom:20px">Dashboard</h1>
+
+    <!-- Stats -->
+    <div class="grid-4" style="margin-bottom:24px">
+      <div class="admin-stat">
+        <div class="admin-stat-icon blue"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+        <div><div class="admin-stat-value">{{ user_count }}</div><div class="admin-stat-label">Total Users</div></div>
+      </div>
+      <div class="admin-stat">
+        <div class="admin-stat-icon green" style="background:rgba(39,174,96,0.15)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#27AE60" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7 7 7-7"/></svg></div>
+        <div><div class="admin-stat-value">{{ pending_dep }}</div><div class="admin-stat-label">Pending Deposits</div></div>
+      </div>
+      <div class="admin-stat">
+        <div class="admin-stat-icon red"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--red-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7-7-7 7"/></svg></div>
+        <div><div class="admin-stat-value">{{ pending_with }}</div><div class="admin-stat-label">Pending Withdrawals</div></div>
+      </div>
+      <div class="admin-stat">
+        <div class="admin-stat-icon gold"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg></div>
+        <div><div class="admin-stat-value">{{ pending_creators }}</div><div class="admin-stat-label">Creator Requests</div></div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="grid-2" style="gap:12px;margin-bottom:24px">
+      <div class="card" style="padding:16px">
+        <div style="font-size:14px;font-weight:800;margin-bottom:12px">Quick Actions</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <a href="/admin/payments" class="btn btn-primary btn-block">Review Payments</a>
+          <a href="/admin/creators" class="btn btn-outline btn-block">Review Creators</a>
+          <button class="btn btn-ghost btn-block" onclick="toggleMaintenance()">Toggle Maintenance</button>
+        </div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-size:14px;font-weight:800;margin-bottom:12px">Create Coupon</div>
+        <div class="form-group"><label class="form-label">Value (&#8377;)</label><input type="number" id="coupon-val" value="100"></div>
+        <button class="btn btn-gold btn-block" onclick="createCoupon()">Generate Coupon</button>
+        <div id="coupon-result" style="display:none;font-size:13px;color:var(--gold);font-weight:700;text-align:center;margin-top:8px;padding:8px;background:rgba(201,168,76,0.1);border-radius:6px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function toggleMaintenance() {
+  const res = await apiPost("/admin/api/toggle-maintenance", {});
+  if (res.success) showToast(`Maintenance mode ${res.maintenance ? 'ON' : 'OFF'}`, "info");
+}
+async function createCoupon() {
+  const value = parseFloat(document.getElementById("coupon-val").value);
+  const res = await apiPost("/admin/api/create-coupon", { value, single_use: false, expires_days: 30 });
+  if (res.success) {
+    const el = document.getElementById("coupon-result");
+    el.textContent = `Code: ${res.code}`;
+    el.style.display = "block";
+    showToast("Coupon created!", "success");
+  }
+}
+</script>
+{% endblock %}

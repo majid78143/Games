@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Admin - Users{% endblock %}
+{% block content %}
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    {% for href, label in [('/admin/','Dashboard'),('/admin/users','Users'),('/admin/payments','Payments'),('/admin/banners','Banners'),('/admin/events','Events'),('/admin/creators','Creators'),('/admin/coupons','Coupons'),('/admin/settings','Settings'),('/admin/logs','Logs')] %}
+    <a href="{{ href }}" class="admin-link {{ 'active' if request.path == href else '' }}">{{ label }}</a>
+    {% endfor %}
+  </aside>
+  <div class="admin-content">
+    <div class="flex-between" style="margin-bottom:20px">
+      <h1 style="font-size:22px;font-weight:900">Users ({{ users|length }})</h1>
+      <input type="text" placeholder="Search users..." id="search" oninput="filterUsers(this.value)" style="max-width:250px">
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="admin-table">
+        <thead>
+          <tr><th>User</th><th>Email</th><th>Balance</th><th>VIP</th><th>Rank</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="users-tbody">
+          {% for user in users %}
+          <tr class="user-row" data-search="{{ (user.email or '') | lower }} {{ (user.display_name or '') | lower }}">
+            <td>
+              <div style="font-weight:700;font-size:13px">{{ user.display_name or user.username or 'Player' }}</div>
+              <div class="text-muted text-xs">{{ user.uid[:12] }}...</div>
+            </td>
+            <td style="font-size:12px">{{ user.email or '-' }}</td>
+            <td style="font-weight:700;color:var(--gold)">&#8377;{{ "{:,.2f}".format(user.balance or 0) }}</td>
+            <td><span class="badge badge-blue">VIP{{ user.vip_level or 0 }}</span></td>
+            <td><span class="badge badge-gray">{{ user.rank or 'Bronze' }}</span></td>
+            <td>
+              {% if user.banned %}<span class="badge badge-red">Banned</span>
+              {% elif user.email_verified %}<span class="badge badge-green">Verified</span>
+              {% else %}<span class="badge badge-gray">Unverified</span>{% endif %}
+            </td>
+            <td>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-ghost btn-sm" onclick="addBal('{{ user.uid }}')">+Bal</button>
+                <button class="btn btn-ghost btn-sm" onclick="setVip('{{ user.uid }}')">VIP</button>
+                {% if not user.banned %}
+                <button class="btn btn-sm" style="background:rgba(232,25,44,0.15);color:var(--red-primary);border:none" onclick="confirmAction('Ban this user?',()=>banUser('{{ user.uid }}'))">Ban</button>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+function filterUsers(q) {
+  document.querySelectorAll(".user-row").forEach(r => {
+    r.style.display = r.dataset.search.includes(q.toLowerCase()) ? "" : "none";
+  });
+}
+async function banUser(uid) {
+  const res = await apiPost("/admin/api/ban-user", { uid });
+  if (res.success) { showToast("User banned","info"); location.reload(); }
+}
+async function addBal(uid) {
+  const amount = prompt("Add balance amount:");
+  if (!amount || isNaN(amount)) return;
+  const res = await apiPost("/admin/api/add-balance", { uid, amount: parseFloat(amount) });
+  if (res.success) { showToast(`Balance added. New: ₹${res.balance}`,"success"); location.reload(); }
+}
+async function setVip(uid) {
+  const level = prompt("Set VIP level (0-10):");
+  if (level === null || isNaN(level)) return;
+  const res = await apiPost("/admin/api/set-vip", { uid, level: parseInt(level) });
+  if (res.success) { showToast("VIP level set","success"); location.reload(); }
+}
+</script>
+{% endblock %}

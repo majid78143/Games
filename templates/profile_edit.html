@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Edit Profile{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container" style="padding-top:16px">
+    <div class="flex-between" style="margin-bottom:16px">
+      <h1 style="font-size:20px;font-weight:900">Edit Profile</h1>
+      <a href="/profile/" class="btn btn-ghost btn-sm">Cancel</a>
+    </div>
+    <div class="card" style="padding:20px">
+      <div id="success-msg" style="display:none;background:rgba(39,174,96,0.1);border:1px solid rgba(39,174,96,0.3);border-radius:8px;padding:10px;font-size:13px;color:#27AE60;margin-bottom:14px">Profile updated successfully.</div>
+      <div class="form-group">
+        <label class="form-label">Display Name</label>
+        <input type="text" id="display_name" value="{{ profile.display_name or '' }}" maxlength="30">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input type="text" id="username" value="{{ profile.username or '' }}" maxlength="20" placeholder="Unique username">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Avatar URL</label>
+        <input type="url" id="avatar" value="{{ profile.avatar or '' }}" placeholder="https://...">
+        <div class="form-hint">Link to your profile image</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Profile Frame</label>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+          {% for frame in ['bronze','silver','gold','platinum','diamond','master','elite','champion','legend'] %}
+          <div style="text-align:center;cursor:pointer" onclick="selectFrame('{{ frame }}')">
+            <svg viewBox="0 0 110 110" width="48" height="48" id="frame-{{ frame }}"><use href="#frame-{{ frame }}"/></svg>
+            <div style="font-size:8px;color:var(--text-muted);margin-top:2px">{{ frame | title }}</div>
+          </div>
+          {% endfor %}
+        </div>
+        <input type="hidden" id="frame" value="{{ profile.frame or 'bronze' }}">
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" id="save-btn">Save Changes</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+function selectFrame(frame) {
+  document.getElementById("frame").value = frame;
+  document.querySelectorAll("[id^='frame-']").forEach(el => el.style.opacity = "0.5");
+  const el = document.getElementById(`frame-${frame}`);
+  if (el) el.style.opacity = "1";
+}
+document.getElementById("save-btn").addEventListener("click", async () => {
+  const data = {
+    display_name: document.getElementById("display_name").value.trim(),
+    username: document.getElementById("username").value.trim(),
+    avatar: document.getElementById("avatar").value.trim(),
+    frame: document.getElementById("frame").value
+  };
+  const btn = document.getElementById("save-btn");
+  btn.disabled = true; btn.textContent = "Saving...";
+  const res = await apiPost("/profile/edit", data);
+  if (res.success) { document.getElementById("success-msg").style.display = "block"; window.scrollTo(0,0); }
+  else { showToast("Failed to save","error"); }
+  btn.disabled = false; btn.textContent = "Save Changes";
+});
+</script>
+{% endblock %}

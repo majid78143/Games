@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}Support - 19AI{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container" style="padding-top:16px">
+    <!-- 19AI Header -->
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <img src="/static/svg/logo_ai.svg" alt="19AI" style="width:44px;height:44px">
+      <div>
+        <h1 style="font-size:18px;font-weight:900">19AI Support</h1>
+        <div class="text-muted text-xs">Available 24/7 - English & Hindi</div>
+      </div>
+      <div class="badge badge-green" style="margin-left:auto">Online</div>
+    </div>
+
+    <!-- Chat Container -->
+    <div class="chat-container">
+      <div class="chat-messages" id="chat-messages">
+        <!-- Welcome bubble -->
+        <div style="display:flex;align-items:flex-start;gap:8px">
+          <img src="/static/svg/logo_ai.svg" alt="19AI" style="width:28px;height:28px;flex-shrink:0;margin-top:2px">
+          <div class="chat-bubble bot">
+            Hello! I am 19AI, your support assistant for 19GameVIP.<br>
+            I can help with: <strong>Games, VIP, Deposits, Withdrawals, Events, Ranks</strong>, and more.<br><br>
+            Type your question in English or Hindi!
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" id="chat-input" placeholder="Ask 19AI anything..." maxlength="300"
+          style="border-radius:20px" onkeydown="if(event.key==='Enter')sendMessage()">
+        <button class="chat-send" onclick="sendMessage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Questions -->
+    <div class="section" style="margin-top:16px">
+      <div class="section-title" style="font-size:13px">Quick Questions</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        {% for q in ["How do I deposit?","What are VIP levels?","How to withdraw?","Game rules?","How to join events?","What is the Creator Program?"] %}
+        <button class="btn btn-ghost btn-sm" onclick="askQuestion('{{ q }}')">{{ q }}</button>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Contact Links -->
+    {% if socials %}
+    <div class="card" style="margin-top:8px">
+      <div style="font-size:13px;font-weight:800;margin-bottom:12px">Contact Us Directly</div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        {% if socials.telegram %}<a href="{{ socials.telegram }}" class="btn btn-ghost btn-sm" target="_blank">Telegram</a>{% endif %}
+        {% if socials.discord %}<a href="{{ socials.discord }}" class="btn btn-ghost btn-sm" target="_blank">Discord</a>{% endif %}
+        {% if socials.whatsapp %}<a href="{{ socials.whatsapp }}" class="btn btn-ghost btn-sm" target="_blank">WhatsApp</a>{% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+let detectedLang = null;
+const messagesEl = document.getElementById("chat-messages");
+
+function appendMessage(text, role) {
+  const wrap = document.createElement("div");
+  wrap.style.display = "flex";
+  wrap.style.alignItems = "flex-start";
+  wrap.style.gap = "8px";
+  wrap.style.justifyContent = role === "user" ? "flex-end" : "flex-start";
+  if (role === "bot") {
+    const icon = document.createElement("img");
+    icon.src = "/static/svg/logo_ai.svg";
+    icon.style.cssText = "width:28px;height:28px;flex-shrink:0;margin-top:2px";
+    wrap.appendChild(icon);
+  }
+  const bubble = document.createElement("div");
+  bubble.className = `chat-bubble ${role}`;
+  bubble.textContent = text;
+  wrap.appendChild(bubble);
+  messagesEl.appendChild(wrap);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function appendTyping() {
+  const wrap = document.createElement("div");
+  wrap.style.display = "flex"; wrap.style.alignItems = "flex-start"; wrap.style.gap = "8px";
+  wrap.id = "typing-indicator";
+  const icon = document.createElement("img");
+  icon.src = "/static/svg/logo_ai.svg";
+  icon.style.cssText = "width:28px;height:28px;flex-shrink:0";
+  const dots = document.createElement("div");
+  dots.className = "typing-dots";
+  [1,2,3].forEach(() => { const d = document.createElement("div"); d.className = "typing-dot"; dots.appendChild(d); });
+  wrap.appendChild(icon); wrap.appendChild(dots);
+  messagesEl.appendChild(wrap);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+async function sendMessage() {
+  const input = document.getElementById("chat-input");
+  const message = input.value.trim();
+  if (!message) return;
+  input.value = "";
+  appendMessage(message, "user");
+  appendTyping();
+  try {
+    const res = await apiPost("/support/api/chat", { message, lang: detectedLang });
+    document.getElementById("typing-indicator")?.remove();
+    if (res.response) {
+      appendMessage(res.response, "bot");
+      detectedLang = res.lang;
+    }
+  } catch(e) {
+    document.getElementById("typing-indicator")?.remove();
+    appendMessage("Sorry, I could not process your request. Please try again.", "bot");
+  }
+}
+
+function askQuestion(q) {
+  document.getElementById("chat-input").value = q;
+  sendMessage();
+}
+</script>
+{% endblock %}

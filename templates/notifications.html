@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container" style="padding-top:16px">
+    <div class="flex-between" style="margin-bottom:16px">
+      <h1 style="font-size:20px;font-weight:900">Notifications</h1>
+      <button class="btn btn-ghost btn-sm" id="mark-all-btn">Mark all read</button>
+    </div>
+    {% if notifications %}
+    <div class="card">
+      {% for notif in notifications %}
+      <div class="notif-item">
+        <div class="notif-dot-indicator {% if notif.read %}read{% endif %}"></div>
+        <div class="notif-body">
+          <div class="notif-title">{{ notif.title or 'Notification' }}</div>
+          <div class="notif-text">{{ notif.message or '' }}</div>
+          <div class="notif-time">{{ notif.time | default(0) }}</div>
+        </div>
+        {% if notif.type %}
+        <span class="badge badge-{{ 'gold' if notif.type=='vip' else 'blue' if notif.type=='rank' else 'red' }}">{{ notif.type | title }}</span>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="card text-center" style="padding:40px">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 12px"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+      <p class="text-muted">No notifications yet</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

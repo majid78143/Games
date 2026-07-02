@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}Prediction Game{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container" style="padding-top:16px">
+    <div class="flex-between" style="margin-bottom:16px">
+      <h1 style="font-size:20px;font-weight:900">Prediction</h1>
+      <a href="/games/" class="btn btn-ghost btn-sm">Back</a>
+    </div>
+    <div class="game-area">
+      <!-- Result Display -->
+      <div class="result-display" id="result-area">
+        <div style="font-size:14px;color:var(--text-muted);margin-bottom:8px">NEXT RESULT IN</div>
+        <div id="timer" style="font-size:40px;font-weight:900;color:var(--blue-primary)">30</div>
+        <div id="result-num" class="result-number" style="display:none;font-size:80px">-</div>
+        <div id="result-text" class="result-label" style="display:none"></div>
+      </div>
+
+      <!-- Choice -->
+      <div class="grid-2" style="margin-bottom:16px;gap:12px">
+        <button class="btn btn-lg" id="high-btn" onclick="setChoice('high')" style="background:rgba(39,174,96,0.15);border:2px solid rgba(39,174,96,0.5);color:#27AE60;font-size:16px;font-weight:900">
+          HIGH (5-9)<br><span style="font-size:11px;font-weight:400;opacity:0.8">Win 1.9x</span>
+        </button>
+        <button class="btn btn-lg" id="low-btn" onclick="setChoice('low')" style="background:rgba(232,25,44,0.15);border:2px solid rgba(232,25,44,0.5);color:var(--red-primary);font-size:16px;font-weight:900">
+          LOW (0-4)<br><span style="font-size:11px;font-weight:400;opacity:0.8">Win 1.9x</span>
+        </button>
+      </div>
+
+      <!-- Bet Controls -->
+      <div class="bet-controls">
+        <div class="bet-label">Bet Amount (&#8377;)</div>
+        <div class="bet-input-row">
+          <input type="number" id="bet" value="10" min="{{ game.min_bet }}" max="{{ game.max_bet }}" style="font-size:18px;font-weight:900;text-align:center">
+          <button class="btn btn-ghost" onclick="document.getElementById('bet').value=Math.max({{ game.min_bet }},parseFloat(document.getElementById('bet').value)/2)">1/2</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('bet').value=Math.min({{ game.max_bet }},parseFloat(document.getElementById('bet').value)*2)">2x</button>
+        </div>
+        <div class="bet-presets">
+          {% for amt in [10,50,100,500,1000] %}
+          <div class="bet-preset" onclick="document.getElementById('bet').value='{{ amt }}'">&#8377;{{ amt }}</div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div id="msg-box" style="text-align:center;padding:12px;font-size:14px;font-weight:700;border-radius:8px;margin:12px 0;display:none"></div>
+
+      <div class="flex-between" style="margin-top:12px">
+        <div style="font-size:13px;color:var(--text-muted)">Balance: <span style="color:var(--gold);font-weight:700">&#8377;<span id="bal">{{ "{:,.2f}".format(profile.balance or 0) }}</span></span></div>
+        <button class="btn btn-primary btn-lg" id="play-btn" onclick="placeBet()" disabled>Select Choice</button>
+      </div>
+    </div>
+
+    <!-- History -->
+    {% if history %}
+    <div class="section">
+      <div class="section-title">Recent Results</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        {% for h in history %}
+        <div style="width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;background:{{ 'rgba(39,174,96,0.15)' if h.won else 'rgba(232,25,44,0.15)' }};border:1px solid {{ 'rgba(39,174,96,0.4)' if h.won else 'rgba(232,25,44,0.4)' }};color:{{ '#27AE60' if h.won else 'var(--red-primary)' }}">
+          {{ h.result.split('_')[0] if '_' in h.result else h.result }}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+let choice = null;
+let timer = 30;
+let interval;
+
+function setChoice(c) {
+  choice = c;
+  document.getElementById("high-btn").style.borderWidth = c === "high" ? "3px" : "2px";
+  document.getElementById("low-btn").style.borderWidth = c === "low" ? "3px" : "2px";
+  document.getElementById("play-btn").textContent = `Bet ${c.toUpperCase()}`;
+  document.getElementById("play-btn").disabled = false;
+}
+
+function startTimer() {
+  timer = 30;
+  clearInterval(interval);
+  interval = setInterval(() => {
+    timer--;
+    document.getElementById("timer").textContent = timer;
+    if (timer <= 0) { timer = 30; }
+  }, 1000);
+}
+startTimer();
+
+async function placeBet() {
+  if (!choice) return;
+  const bet = parseFloat(document.getElementById("bet").value);
+  const btn = document.getElementById("play-btn");
+  const msgBox = document.getElementById("msg-box");
+  btn.disabled = true; btn.textContent = "Rolling...";
+  msgBox.style.display = "none";
+  const res = await apiPost("/games/api/play/prediction", { bet, choice });
+  if (res.error) {
+    msgBox.textContent = res.error;
+    msgBox.style.background = "rgba(232,25,44,0.1)";
+    msgBox.style.color = "var(--red-primary)";
+    msgBox.style.display = "block";
+    btn.disabled = false; btn.textContent = `Bet ${choice.toUpperCase()}`;
+    return;
+  }
+  const numEl = document.getElementById("result-num");
+  const timerEl = document.getElementById("timer");
+  const resultText = document.getElementById("result-text");
+  timerEl.style.display = "none";
+  numEl.style.display = "block";
+  numEl.textContent = res.result?.number ?? "?";
+  numEl.className = "result-number " + (res.payout > 0 ? "result-win" : "result-lose");
+  resultText.textContent = res.payout > 0 ? `WIN +&#8377;${parseFloat(res.payout).toFixed(2)}` : "LOSS";
+  resultText.style.display = "block";
+  resultText.innerHTML = res.payout > 0 ? `<span style="color:#27AE60">WIN +&#8377;${parseFloat(res.payout).toFixed(2)}</span>` : `<span style="color:var(--red-primary)">LOSS -&#8377;${bet.toFixed(2)}</span>`;
+  document.getElementById("bal").textContent = parseFloat(res.balance).toLocaleString("en-IN", {minimumFractionDigits:2});
+  const balEl = document.querySelector(".balance-display");
+  if (balEl) balEl.textContent = parseFloat(res.balance).toLocaleString("en-IN", {minimumFractionDigits:2});
+  setTimeout(() => {
+    numEl.style.display = "none"; timerEl.style.display = "block"; resultText.style.display = "none";
+    btn.disabled = false; btn.textContent = `Bet ${choice.toUpperCase()}`;
+  }, 3000);
+}
+</script>
+{% endblock %}

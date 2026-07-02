@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Security{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container" style="padding-top:16px">
+    <div class="flex-between" style="margin-bottom:16px">
+      <h1 style="font-size:20px;font-weight:900">Security</h1>
+      <a href="/settings/" class="btn btn-ghost btn-sm">Back</a>
+    </div>
+    <div class="card" style="padding:20px;margin-bottom:16px">
+      <div style="font-size:14px;font-weight:800;margin-bottom:8px">Email Verification</div>
+      {% if current_user.email_verified %}
+      <div class="badge badge-green">Email Verified</div>
+      {% else %}
+      <div class="badge badge-red" style="margin-bottom:10px">Email Not Verified</div>
+      <button class="btn btn-primary btn-sm" onclick="resendVerification()">Resend Verification Email</button>
+      {% endif %}
+    </div>
+    <div class="section">
+      <div class="section-title">Login History</div>
+      {% if logins %}
+      <div class="card">
+        {% for login in logins %}
+        <div style="padding:12px 0;border-bottom:1px solid var(--border)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-size:13px;font-weight:700">{{ login.ip or 'Unknown' }}</div>
+              <div class="text-muted text-xs">{{ login.device[:50] if login.device else 'Unknown device' }}</div>
+            </div>
+            <div class="badge badge-blue" style="font-size:10px">Login</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="card text-center" style="padding:32px"><p class="text-muted">No login history.</p></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="module">
+async function resendVerification() {
+  try { await window.sendVerification(); showToast("Verification email sent","success"); }
+  catch(e) { showToast("Failed to send","error"); }
+}
+window.resendVerification = resendVerification;
+</script>
+{% endblock %}

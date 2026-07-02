@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Events{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container" style="padding-top:16px">
+    <div class="flex-between" style="margin-bottom:16px">
+      <h1 style="font-size:20px;font-weight:900">Events</h1>
+      <span class="badge badge-blue">{{ events|length }} Active</span>
+    </div>
+
+    <!-- Tabs by type -->
+    <div class="tabs" data-tabs>
+      <button class="tab-btn active" data-tab="all">All</button>
+      <button class="tab-btn" data-tab="daily">Daily</button>
+      <button class="tab-btn" data-tab="weekly">Weekly</button>
+      <button class="tab-btn" data-tab="monthly">Monthly</button>
+      <button class="tab-btn" data-tab="festival">Festival</button>
+      <button class="tab-btn" data-tab="creator">Creator</button>
+    </div>
+
+    <div class="tab-content active" id="tab-all">
+      {% if events %}
+        {% for event in events %}
+        <div class="event-card">
+          <div class="event-card-header">
+            <span class="event-type-badge badge-{{ 'blue' if event.type=='daily' else 'red' if event.type=='festival' else 'gold' if event.type=='weekly' else 'gray' }}">{{ event.type | title }}</span>
+            <div class="event-timer">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              <span data-countdown="{{ event.end_at }}">Loading...</span>
+            </div>
+          </div>
+          <div class="event-card-body">
+            <div class="event-title">{{ event.title }}</div>
+            <div class="event-desc">{{ event.description }}</div>
+            <div class="flex-between">
+              <span class="badge badge-gold">{{ event.reward }}</span>
+              <a href="/events/{{ event.id }}" class="btn btn-primary btn-sm">View Details</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+      <div class="card text-center" style="padding:40px">
+        <p class="text-muted">No active events right now. Check back soon!</p>
+      </div>
+      {% endif %}
+    </div>
+
+    {% for etype in ['daily','weekly','monthly','festival','creator'] %}
+    <div class="tab-content" id="tab-{{ etype }}">
+      {% set type_events = by_type.get(etype, []) %}
+      {% if type_events %}
+        {% for event in type_events %}
+        <div class="event-card">
+          <div class="event-card-header">
+            <span class="event-type-badge badge-blue">{{ event.type | title }}</span>
+            <div class="event-timer">
+              <span data-countdown="{{ event.end_at }}">Loading...</span>
+            </div>
+          </div>
+          <div class="event-card-body">
+            <div class="event-title">{{ event.title }}</div>
+            <div class="event-desc">{{ event.description }}</div>
+            <div class="flex-between">
+              <span class="badge badge-gold">{{ event.reward }}</span>
+              <a href="/events/{{ event.id }}" class="btn btn-primary btn-sm">View</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+      <div class="card text-center" style="padding:32px">
+        <p class="text-muted">No {{ etype }} events active.</p>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

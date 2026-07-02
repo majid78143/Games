@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Admin - Logs{% endblock %}
+{% block content %}
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    {% for href, label in [('/admin/','Dashboard'),('/admin/users','Users'),('/admin/payments','Payments'),('/admin/banners','Banners'),('/admin/events','Events'),('/admin/creators','Creators'),('/admin/coupons','Coupons'),('/admin/settings','Settings'),('/admin/logs','Logs')] %}
+    <a href="{{ href }}" class="admin-link {{ 'active' if request.path == href else '' }}">{{ label }}</a>
+    {% endfor %}
+  </aside>
+  <div class="admin-content">
+    <h1 style="font-size:22px;font-weight:900;margin-bottom:20px">System Logs</h1>
+    {% if logs %}
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="admin-table">
+        <thead><tr><th>Time</th><th>Admin</th><th>Action</th></tr></thead>
+        <tbody>
+          {% for log in logs %}
+          <tr>
+            <td class="text-xs text-muted">{{ log.time }}</td>
+            <td style="font-size:12px">{{ log.admin[:10] if log.admin else 'System' }}...</td>
+            <td style="font-size:12px">{{ log.message }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="card text-center" style="padding:32px"><p class="text-muted">No logs yet.</p></div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Redeem Coupon{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container" style="padding-top:16px">
+    <div class="flex-between" style="margin-bottom:16px">
+      <h1 style="font-size:20px;font-weight:900">Redeem Coupon</h1>
+      <a href="/wallet/" class="btn btn-ghost btn-sm">Back</a>
+    </div>
+    <div class="card card-gold" style="text-align:center;padding:32px;margin-bottom:20px">
+      <div style="width:64px;height:64px;margin:0 auto 16px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="64" height="64"><path d="M21 5H3v4a2 2 0 010 4v4h18v-4a2 2 0 010-4V5z"/><line x1="12" y1="5" x2="12" y2="9" stroke-dasharray="2"/><line x1="12" y1="15" x2="12" y2="19" stroke-dasharray="2"/></svg>
+      </div>
+      <h2 style="font-size:18px;font-weight:900;margin-bottom:8px">Have a coupon code?</h2>
+      <p class="text-muted text-sm">Enter your code below to redeem bonus balance or rewards.</p>
+    </div>
+    <div class="card" style="padding:20px">
+      <div id="error-msg" style="display:none;background:rgba(232,25,44,0.1);border:1px solid rgba(232,25,44,0.3);border-radius:8px;padding:10px;font-size:13px;color:var(--red-primary);margin-bottom:14px"></div>
+      <div id="success-msg" style="display:none;background:rgba(39,174,96,0.1);border:1px solid rgba(39,174,96,0.3);border-radius:8px;padding:12px;font-size:13px;color:#27AE60;margin-bottom:14px"></div>
+      <div class="form-group">
+        <label class="form-label">Coupon Code</label>
+        <input type="text" id="code" placeholder="19VIP-XXXX-XXXX" style="text-transform:uppercase;font-weight:700;letter-spacing:2px;font-size:16px">
+      </div>
+      <button class="btn btn-gold btn-block btn-lg" id="redeem-btn">Redeem Now</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.getElementById("redeem-btn").addEventListener("click", async () => {
+  const code = document.getElementById("code").value.trim().toUpperCase();
+  const errEl = document.getElementById("error-msg");
+  const sucEl = document.getElementById("success-msg");
+  errEl.style.display = "none"; sucEl.style.display = "none";
+  if (!code) { errEl.textContent = "Enter a coupon code."; errEl.style.display = "block"; return; }
+  const btn = document.getElementById("redeem-btn");
+  btn.disabled = true; btn.textContent = "Verifying...";
+  const res = await apiPost("/wallet/api/redeem-coupon", { code });
+  if (res.success) {
+    sucEl.innerHTML = `Coupon redeemed! <strong>+&#8377;${parseFloat(res.value).toFixed(2)}</strong> added to your balance. New balance: &#8377;${parseFloat(res.balance).toFixed(2)}`;
+    sucEl.style.display = "block";
+    document.getElementById("code").value = "";
+    const balEl = document.querySelector(".balance-display");
+    if (balEl) balEl.textContent = parseFloat(res.balance).toLocaleString("en-IN", {minimumFractionDigits:2});
+  } else { errEl.textContent = res.error || "Invalid coupon."; errEl.style.display = "block"; }
+  btn.disabled = false; btn.textContent = "Redeem Now";
+});
+document.getElementById("code").addEventListener("input", e => { e.target.value = e.target.value.toUpperCase(); });
+</script>
+{% endblock %}

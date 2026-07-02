@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Admin - Payments{% endblock %}
+{% block content %}
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    {% for href, label in [('/admin/','Dashboard'),('/admin/users','Users'),('/admin/payments','Payments'),('/admin/banners','Banners'),('/admin/events','Events'),('/admin/creators','Creators'),('/admin/coupons','Coupons'),('/admin/settings','Settings'),('/admin/logs','Logs')] %}
+    <a href="{{ href }}" class="admin-link {{ 'active' if request.path == href else '' }}">{{ label }}</a>
+    {% endfor %}
+  </aside>
+  <div class="admin-content">
+    <h1 style="font-size:22px;font-weight:900;margin-bottom:20px">Payments</h1>
+
+    <!-- Tabs -->
+    <div class="tabs" data-tabs style="margin-bottom:16px">
+      <button class="tab-btn active" data-tab="deposits">Deposits ({{ deposits|length }})</button>
+      <button class="tab-btn" data-tab="withdrawals">Withdrawals ({{ withdrawals|length }})</button>
+    </div>
+
+    <div class="tab-content active" id="tab-deposits">
+      {% if deposits %}
+      <div class="card" style="padding:0;overflow:hidden">
+        <table class="admin-table">
+          <thead><tr><th>ID</th><th>User</th><th>Amount</th><th>UTR</th><th>Method</th><th>Actions</th></tr></thead>
+          <tbody>
+            {% for tx in deposits %}
+            <tr>
+              <td class="text-xs text-muted">{{ tx.id[:10] }}...</td>
+              <td style="font-size:12px">{{ tx.uid[:10] }}...</td>
+              <td style="font-weight:900;color:var(--gold)">&#8377;{{ "{:,.2f}".format(tx.amount or 0) }}</td>
+              <td style="font-size:12px">{{ tx.utr or '-' }}</td>
+              <td><span class="badge badge-gray">{{ tx.method or 'manual' }}</span></td>
+              <td>
+                <div style="display:flex;gap:6px">
+                  <button class="btn btn-sm" style="background:rgba(39,174,96,0.15);color:#27AE60;border:none" onclick="approveDeposit('{{ tx.id }}')">Approve</button>
+                  <button class="btn btn-sm" style="background:rgba(232,25,44,0.15);color:var(--red-primary);border:none" onclick="rejectDeposit('{{ tx.id }}')">Reject</button>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="card text-center" style="padding:32px"><p class="text-muted">No pending deposits.</p></div>
+      {% endif %}
+    </div>
+
+    <div class="tab-content" id="tab-withdrawals">
+      {% if withdrawals %}
+      <div class="card" style="padding:0;overflow:hidden">
+        <table class="admin-table">
+          <thead><tr><th>ID</th><th>User</th><th>Amount</th><th>UPI</th><th>Actions</th></tr></thead>
+          <tbody>
+            {% for tx in withdrawals %}
+            <tr>
+              <td class="text-xs text-muted">{{ tx.id[:10] }}...</td>
+              <td style="font-size:12px">{{ tx.uid[:10] }}...</td>
+              <td style="font-weight:900;color:var(--red-primary)">&#8377;{{ "{:,.2f}".format(tx.amount or 0) }}</td>
+              <td style="font-size:12px">{{ tx.upi or '-' }}</td>
+              <td>
+                <button class="btn btn-sm" style="background:rgba(39,174,96,0.15);color:#27AE60;border:none" onclick="approveWithdrawal('{{ tx.id }}')">Approve</button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="card text-center" style="padding:32px"><p class="text-muted">No pending withdrawals.</p></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function approveDeposit(id) {
+  const res = await apiPost("/admin/api/approve-deposit", { tx_id: id });
+  if (res.success) { showToast("Deposit approved","success"); location.reload(); }
+  else showToast(res.error,"error");
+}
+async function rejectDeposit(id) {
+  const res = await apiPost("/admin/api/reject-deposit", { tx_id: id });
+  if (res.success) { showToast("Deposit rejected","info"); location.reload(); }
+}
+async function approveWithdrawal(id) {
+  const res = await apiPost("/admin/api/approve-withdrawal", { tx_id: id });
+  if (res.success) { showToast("Withdrawal approved","success"); location.reload(); }
+}
+</script>
+{% endblock %}

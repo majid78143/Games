@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Creator Application{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container" style="padding-top:16px">
+    <div class="flex-between" style="margin-bottom:16px">
+      <h1 style="font-size:20px;font-weight:900">Creator Application</h1>
+      <a href="/creator/" class="btn btn-ghost btn-sm">Back</a>
+    </div>
+    {% if existing %}
+    <div class="card" style="text-align:center;padding:32px">
+      <div class="badge badge-{{ 'green' if existing.status=='approved' else 'gold' if existing.status=='pending' else 'red' }}" style="font-size:14px;padding:8px 20px;margin-bottom:12px">{{ existing.status | title }}</div>
+      <div style="font-size:14px;font-weight:700">{{ 'Application Approved!' if existing.status=='approved' else 'Application Under Review' if existing.status=='pending' else 'Application Rejected' }}</div>
+      <div class="text-muted text-sm" style="margin-top:6px">{{ 'Go to Creator Dashboard' if existing.status=='approved' else 'We will review your application within 3-5 business days.' }}</div>
+      {% if existing.status == 'approved' %}
+      <a href="/creator/dashboard" class="btn btn-primary" style="margin-top:16px">Go to Dashboard</a>
+      {% endif %}
+    </div>
+    {% else %}
+    <div class="card" style="padding:20px">
+      <div id="error-msg" style="display:none;background:rgba(232,25,44,0.1);border:1px solid rgba(232,25,44,0.3);border-radius:8px;padding:10px;font-size:13px;color:var(--red-primary);margin-bottom:14px"></div>
+      <div id="success-msg" style="display:none;background:rgba(39,174,96,0.1);border:1px solid rgba(39,174,96,0.3);border-radius:8px;padding:12px;font-size:13px;color:#27AE60;margin-bottom:14px">Application submitted successfully! We will review it within 3-5 business days.</div>
+      <div class="form-group">
+        <label class="form-label">Your Name / Channel Name</label>
+        <input type="text" id="name" placeholder="Your name or channel name" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Primary Platform</label>
+        <select id="platform">
+          <option value="">Select platform</option>
+          <option>YouTube</option><option>Instagram</option><option>Telegram</option>
+          <option>Twitter/X</option><option>TikTok</option><option>Discord</option><option>Facebook</option><option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Channel / Profile URL</label>
+        <input type="url" id="channel_url" placeholder="https://...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Follower / Subscriber Count</label>
+        <input type="number" id="followers" placeholder="e.g. 5000">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Content Type</label>
+        <select id="content_type">
+          <option value="">Select type</option>
+          <option>Gaming</option><option>Finance/Prediction</option><option>Entertainment</option>
+          <option>Education</option><option>Lifestyle</option><option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Brief Description (optional)</label>
+        <textarea id="description" rows="3" placeholder="Tell us about your content and audience..."></textarea>
+      </div>
+      <button class="btn btn-gold btn-block btn-lg" id="apply-btn" onclick="submitApplication()">Submit Application</button>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function submitApplication() {
+  const data = {
+    name: document.getElementById("name").value.trim(),
+    platform: document.getElementById("platform").value,
+    channel_url: document.getElementById("channel_url").value.trim(),
+    followers: document.getElementById("followers").value,
+    content_type: document.getElementById("content_type").value,
+    description: document.getElementById("description").value.trim()
+  };
+  const errEl = document.getElementById("error-msg");
+  const sucEl = document.getElementById("success-msg");
+  errEl.style.display = "none";
+  if (!data.name || !data.platform || !data.channel_url || !data.followers || !data.content_type) {
+    errEl.textContent = "Please fill all required fields."; errEl.style.display = "block"; return;
+  }
+  const btn = document.getElementById("apply-btn");
+  btn.disabled = true; btn.textContent = "Submitting...";
+  const res = await apiPost("/creator/api/apply", data);
+  if (res.success) { sucEl.style.display = "block"; window.scrollTo(0,0); }
+  else { errEl.textContent = res.error || "Submission failed."; errEl.style.display = "block"; btn.disabled = false; btn.textContent = "Submit Application"; }
+}
+</script>
+{% endblock %}

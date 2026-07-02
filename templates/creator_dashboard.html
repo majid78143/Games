@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Creator Dashboard{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container" style="padding-top:16px">
+    <div class="flex-between" style="margin-bottom:16px">
+      <h1 style="font-size:20px;font-weight:900">Creator Dashboard</h1>
+      <span class="badge badge-gold">Approved</span>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid-2" style="margin-bottom:20px;gap:12px">
+      <div class="card card-gold" style="text-align:center;padding:20px">
+        <div style="font-size:32px;font-weight:900;color:var(--gold)">{{ creator.total_referrals or 0 }}</div>
+        <div class="text-muted text-xs">Total Referrals</div>
+      </div>
+      <div class="card" style="text-align:center;padding:20px">
+        <div style="font-size:32px;font-weight:900;color:var(--blue-primary)">&#8377;{{ "{:,.0f}".format(creator.total_earnings or 0) }}</div>
+        <div class="text-muted text-xs">Total Earnings</div>
+      </div>
+    </div>
+
+    <!-- Referral Code -->
+    <div class="card card-gold" style="padding:20px;margin-bottom:16px">
+      <div style="font-size:13px;font-weight:700;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Your Referral Code</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="font-size:22px;font-weight:900;color:var(--gold);letter-spacing:3px;flex:1">{{ creator.ref_code }}</div>
+        <button class="btn btn-gold btn-sm" onclick="copyToClipboard('{{ creator.ref_code }}')">Copy</button>
+      </div>
+      <div class="text-muted text-xs" style="margin-top:6px">Share this code. When players use it, you earn commission.</div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="grid-2" style="margin-bottom:16px;gap:10px">
+      <a href="/creator/rewards" class="btn btn-outline btn-block">Rewards</a>
+      <a href="/creator/events" class="btn btn-ghost btn-block">My Events</a>
+    </div>
+
+    <!-- Recent Referrals -->
+    {% if referrals %}
+    <div class="section">
+      <div class="section-title">Recent Referrals</div>
+      <div class="card">
+        {% for ref in referrals[:10] %}
+        <div class="tx-row">
+          <div class="lb-avatar"><svg viewBox="0 0 36 36" width="36" height="36"><rect width="36" height="36" rx="18" fill="#0D1B3E"/><circle cx="18" cy="14" r="7" fill="#1A6FFF" opacity="0.7"/></svg></div>
+          <div class="tx-info">
+            <div class="tx-type">{{ ref.email or 'Referred Player' }}</div>
+            <div class="tx-time">Joined via your code</div>
+          </div>
+          <div class="tx-amount credit">+&#8377;{{ "{:,.2f}".format(ref.commission or 0) }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% else %}
+    <div class="card text-center" style="padding:32px">
+      <p class="text-muted">No referrals yet. Share your code to start earning!</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

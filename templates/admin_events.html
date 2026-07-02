@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Admin - Events{% endblock %}
+{% block content %}
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    {% for href, label in [('/admin/','Dashboard'),('/admin/users','Users'),('/admin/payments','Payments'),('/admin/banners','Banners'),('/admin/events','Events'),('/admin/creators','Creators'),('/admin/coupons','Coupons'),('/admin/settings','Settings'),('/admin/logs','Logs')] %}
+    <a href="{{ href }}" class="admin-link {{ 'active' if request.path == href else '' }}">{{ label }}</a>
+    {% endfor %}
+  </aside>
+  <div class="admin-content">
+    <div class="flex-between" style="margin-bottom:20px">
+      <h1 style="font-size:22px;font-weight:900">Events</h1>
+      <button class="btn btn-primary" onclick="openModal('create-event-modal')">Create Event</button>
+    </div>
+    {% if events %}
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="admin-table">
+        <thead><tr><th>Title</th><th>Type</th><th>Reward</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for ev in events %}
+          <tr>
+            <td style="font-weight:700;font-size:13px">{{ ev.title }}</td>
+            <td><span class="badge badge-blue">{{ ev.type | title }}</span></td>
+            <td><span class="badge badge-gold">{{ ev.reward }}</span></td>
+            <td><span class="badge {{ 'badge-green' if ev.active else 'badge-gray' }}">{{ 'Active' if ev.active else 'Ended' }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="card text-center" style="padding:32px"><p class="text-muted">No events created yet.</p></div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Create Event Modal -->
+<div class="modal-overlay" id="create-event-modal">
+  <div class="modal" style="max-height:90vh;overflow-y:auto">
+    <div class="modal-header">
+      <div class="modal-title">Create Event</div>
+      <button class="modal-close" onclick="closeModal('create-event-modal')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="form-group"><label class="form-label">Event Title</label><input type="text" id="ev-title" placeholder="Event name"></div>
+    <div class="form-group"><label class="form-label">Description</label><textarea id="ev-desc" rows="3" placeholder="Event description"></textarea></div>
+    <div class="form-group">
+      <label class="form-label">Type</label>
+      <select id="ev-type"><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="festival">Festival</option><option value="creator">Creator</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Reward</label><input type="text" id="ev-reward" placeholder="e.g. ₹500 Cash Prize"></div>
+    <div class="form-group"><label class="form-label">Duration (hours)</label><input type="number" id="ev-hours" value="24"></div>
+    <button class="btn btn-primary btn-block" onclick="createEvent()">Create Event</button>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function createEvent() {
+  const data = {
+    title: document.getElementById("ev-title").value.trim(),
+    description: document.getElementById("ev-desc").value.trim(),
+    type: document.getElementById("ev-type").value,
+    reward: document.getElementById("ev-reward").value.trim(),
+    duration_hours: parseInt(document.getElementById("ev-hours").value)
+  };
+  if (!data.title) { showToast("Enter event title","error"); return; }
+  const res = await apiPost("/admin/api/create-event", data);
+  if (res.success) { showToast("Event created!","success"); closeModal("create-event-modal"); location.reload(); }
+  else showToast(res.error || "Failed","error");
+}
+</script>
+{% endblock %}

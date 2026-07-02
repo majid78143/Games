@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Creators{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container" style="padding-top:16px">
+    <!-- Hero -->
+    <div class="hero" style="margin-bottom:20px;text-align:center">
+      <div class="badge badge-gold" style="display:inline-flex;margin-bottom:12px">Creator Program</div>
+      <h1 class="hero-title">Earn by Promoting 19GameVIP</h1>
+      <p class="hero-subtitle">Join as a creator and earn commission for every player you refer. Build your community, earn monthly rewards.</p>
+      {% if current_user %}
+      <a href="/creator/apply" class="btn btn-gold btn-lg">Apply Now</a>
+      {% else %}
+      <a href="/auth/register" class="btn btn-primary btn-lg">Join Free</a>
+      {% endif %}
+    </div>
+
+    <!-- Benefits -->
+    <div class="section">
+      <div class="section-title">Creator Benefits</div>
+      <div class="grid-2">
+        {% for icon, title, desc in [('star','Commission Earnings','Earn up to 15% commission on referee deposits'),('trophy','Monthly Rewards','Top creators get exclusive cash rewards every month'),('crown','VIP Fast Track','Get VIP levels faster with creator bonus XP'),('gem','Exclusive Badge','Get a unique Creator badge on your profile')] %}
+        <div class="card" style="padding:16px">
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:10px">
+            <svg width="22" height="22" viewBox="0 0 24 24"><use href="#icon-{{ icon }}" fill="var(--gold)" stroke="var(--gold)"/></svg>
+          </div>
+          <div style="font-size:13px;font-weight:800;margin-bottom:4px">{{ title }}</div>
+          <div class="text-muted text-xs">{{ desc }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Featured Creators -->
+    {% if creators %}
+    <div class="section">
+      <div class="section-title">Featured Creators</div>
+      {% for creator in creators[:5] %}
+      <div class="creator-card" style="margin-bottom:10px">
+        <div class="creator-avatar">
+          <svg viewBox="0 0 52 52" width="52" height="52"><rect width="52" height="52" rx="26" fill="#0D1B3E"/><circle cx="26" cy="20" r="10" fill="#1A6FFF" opacity="0.7"/></svg>
+        </div>
+        <div class="creator-info">
+          <div class="creator-name">{{ creator.name }}</div>
+          <div class="creator-platform">{{ creator.platform }}</div>
+          <div class="creator-stats">
+            <div class="creator-stat">Referrals: <span>{{ creator.total_referrals or 0 }}</span></div>
+          </div>
+        </div>
+        <span class="badge badge-gold">Creator</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

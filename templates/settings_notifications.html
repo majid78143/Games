@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Notification Preferences{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container" style="padding-top:16px">
+    <div class="flex-between" style="margin-bottom:16px">
+      <h1 style="font-size:20px;font-weight:900">Notifications</h1>
+      <a href="/settings/" class="btn btn-ghost btn-sm">Back</a>
+    </div>
+    <div class="card" style="padding:20px">
+      {% for key, label in [('vip_updates','VIP Level Updates'),('rank_changes','Rank Changes'),('events','Event Announcements'),('deposits','Deposit Confirmations'),('withdrawals','Withdrawal Updates'),('creator','Creator Program Updates')] %}
+      <div class="flex-between" style="padding:12px 0;border-bottom:1px solid var(--border)">
+        <div>
+          <div style="font-size:13px;font-weight:700">{{ label }}</div>
+        </div>
+        <label style="position:relative;width:44px;height:24px;cursor:pointer">
+          <input type="checkbox" id="pref-{{ key }}" {% if prefs.get(key,True) %}checked{% endif %} style="opacity:0;width:0;height:0" onchange="savePref()">
+          <span style="position:absolute;inset:0;background:{{ 'var(--blue-primary)' }};border-radius:12px;transition:0.3s" id="toggle-{{ key }}"></span>
+          <span style="position:absolute;left:2px;top:2px;width:20px;height:20px;background:white;border-radius:50%;transition:0.3s" id="knob-{{ key }}"></span>
+        </label>
+      </div>
+      {% endfor %}
+      <button class="btn btn-primary btn-block" style="margin-top:16px" onclick="savePref()">Save Preferences</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function savePref() {
+  const data = {};
+  document.querySelectorAll("[id^='pref-']").forEach(el => {
+    data[el.id.replace("pref-","")] = el.checked;
+  });
+  const res = await apiPost("/settings/api/update-notifications", data);
+  if (res.success) showToast("Saved","success");
+}
+</script>
+{% endblock %}

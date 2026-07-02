@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container" style="padding-top:16px">
+    <!-- Profile Hero -->
+    <div class="profile-hero">
+      <div class="profile-frame-wrap">
+        <svg class="profile-frame" viewBox="0 0 110 110"><use href="#frame-{{ profile.rank | lower | replace(' ','') if profile.rank else 'bronze' }}"/></svg>
+        {% if profile.avatar %}
+        <img class="profile-avatar" src="{{ profile.avatar }}" alt="Avatar">
+        {% else %}
+        <svg class="profile-avatar" viewBox="0 0 76 76" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;width:76px;height:76px">
+          <rect width="76" height="76" fill="#0D1B3E" rx="38"/>
+          <circle cx="38" cy="30" r="14" fill="#1A6FFF" opacity="0.7"/>
+          <path d="M10 70c0-14 12.5-24 28-24s28 10 28 24" fill="#1A6FFF" opacity="0.5"/>
+        </svg>
+        {% endif %}
+      </div>
+      <div class="profile-name">{{ profile.display_name or profile.username or 'Player' }}</div>
+      <div class="profile-username">@{{ profile.username or profile.email.split('@')[0] if profile.email else 'player' }}</div>
+      <div class="profile-badges">
+        <div class="vip-badge-wrap" style="width:36px;height:42px">
+          <svg viewBox="0 0 60 70" width="36" height="42"><use href="#vip-{{ vip_level or 1 }}"/></svg>
+        </div>
+        <span class="badge badge-blue">{{ vip_name }}</span>
+        <div style="width:32px;height:32px">
+          <svg viewBox="0 0 56 56" width="32" height="32"><use href="#rank-{{ profile.rank | lower | replace(' ','') if profile.rank else 'bronze' }}"/></svg>
+        </div>
+        <span class="badge badge-gold">{{ profile.rank or 'Bronze' }}</span>
+        {% if profile.email_verified %}
+        <span class="badge badge-green">Verified</span>
+        {% endif %}
+      </div>
+      <a href="/profile/edit" class="btn btn-ghost btn-sm" style="margin-top:14px">Edit Profile</a>
+    </div>
+
+    <!-- VIP Progress -->
+    <div class="card card-gold" style="margin-bottom:16px">
+      <div class="flex-between" style="margin-bottom:8px">
+        <span style="font-size:13px;font-weight:800;color:var(--gold)">{{ vip_name }} Progress</span>
+        <span class="text-muted text-xs">{{ "{:,}".format(vip_xp) }} / {{ "{:,}".format(next_vip_threshold) }} XP</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill progress-fill-gold" style="width:{{ vip_progress }}%"></div>
+      </div>
+      <div class="text-muted text-xs" style="margin-top:6px">{{ vip_progress }}% to next VIP level</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid-4" style="margin-bottom:20px">
+      <div class="stat-box">
+        <div class="stat-value">{{ profile.total_games or 0 }}</div>
+        <div class="stat-label">Games</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value text-blue">{{ profile.total_wins or 0 }}</div>
+        <div class="stat-label">Wins</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value text-gold">&#8377;{{ "{:,.0f}".format(profile.total_wagered or 0) }}</div>
+        <div class="stat-label">Wagered</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value">{{ "{:.0f}".format((profile.total_wins / profile.total_games * 100) if profile.total_games else 0) }}%</div>
+        <div class="stat-label">Win Rate</div>
+      </div>
+    </div>
+
+    <!-- Achievements -->
+    {% if achievements %}
+    <div class="section">
+      <div class="section-title">Achievements</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        {% for ach in achievements %}
+        <div style="text-align:center;width:64px">
+          <svg viewBox="0 0 56 56" width="48" height="48" style="margin:0 auto 4px"><use href="#ach-{{ ach.id }}"/></svg>
+          <div style="font-size:9px;color:var(--text-muted);font-weight:600">{{ ach.name }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Game History -->
+    {% if history %}
+    <div class="section">
+      <div class="section-title">
+        Recent Games
+        <a href="/games/history" class="btn btn-ghost btn-sm" style="margin-left:auto;font-size:11px">View All</a>
+      </div>
+      <div class="card">
+        {% for h in history %}
+        <div class="tx-row">
+          <div class="tx-icon {{ 'deposit' if h.won else 'withdraw' }}">
+            <svg viewBox="0 0 64 64" width="24" height="24"><use href="#game-{{ h.game }}"/></svg>
+          </div>
+          <div class="tx-info">
+            <div class="tx-type">{{ h.game | title }}</div>
+            <div class="tx-time">Bet: &#8377;{{ "{:,.0f}".format(h.bet) }}</div>
+          </div>
+          <div>
+            <div class="tx-amount {{ 'credit' if h.won else 'debit' }}">
+              {{ '+' if h.won else '-' }}&#8377;{{ "{:,.2f}".format(h.payout if h.won else h.bet) }}
+            </div>
+            <span class="tx-status {{ 'approved' if h.won else 'rejected' }}">{{ 'Win' if h.won else 'Loss' }}</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Recent Logins -->
+    {% if logins %}
+    <div class="section">
+      <div class="section-title">Recent Logins</div>
+      <div class="card">
+        {% for login in logins %}
+        <div style="padding:10px 0;border-bottom:1px solid var(--border);font-size:12px">
+          <div style="font-weight:700">{{ login.ip or 'Unknown IP' }}</div>
+          <div class="text-muted">{{ login.device[:40] if login.device else 'Unknown device' }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Quick Links -->
+    <div class="grid-2" style="margin-bottom:16px">
+      <a href="/settings/" class="btn btn-ghost btn-block">Settings</a>
+      <a href="/auth/logout" class="btn btn-outline btn-block" style="color:var(--red-primary);border-color:var(--red-primary)">Logout</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

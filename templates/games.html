@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Games{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container" style="padding-top:16px">
+    <div class="flex-between" style="margin-bottom:16px">
+      <h1 style="font-size:20px;font-weight:900">Games</h1>
+      <a href="/games/history" class="btn btn-ghost btn-sm">History</a>
+    </div>
+
+    <!-- Search -->
+    <div class="input-group" style="margin-bottom:16px">
+      <input type="text" id="search" placeholder="Search games..." oninput="filterGames(this.value)">
+      <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    </div>
+
+    <!-- Games Grid -->
+    <div class="grid-4" id="games-grid">
+      {% for game in games %}
+      <a href="/games/{{ game.id }}" class="game-card game-item" style="text-decoration:none" data-name="{{ game.name | lower }}">
+        <div class="game-card-img">
+          <svg viewBox="0 0 64 64"><use href="#game-{{ game.id }}"/></svg>
+        </div>
+        <div class="game-card-body">
+          <div class="game-card-name">{{ game.name }}</div>
+          <div class="game-card-info">&#8377;{{ game.min_bet }}-{{ game.max_bet }}</div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+function filterGames(query) {
+  const q = query.toLowerCase();
+  document.querySelectorAll(".game-item").forEach(el => {
+    el.style.display = el.dataset.name.includes(q) ? "" : "none";
+  });
+}
+</script>
+{% endblock %}

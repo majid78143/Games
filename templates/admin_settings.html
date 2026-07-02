@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Admin - Settings{% endblock %}
+{% block content %}
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    {% for href, label in [('/admin/','Dashboard'),('/admin/users','Users'),('/admin/payments','Payments'),('/admin/banners','Banners'),('/admin/events','Events'),('/admin/creators','Creators'),('/admin/coupons','Coupons'),('/admin/settings','Settings'),('/admin/logs','Logs')] %}
+    <a href="{{ href }}" class="admin-link {{ 'active' if request.path == href else '' }}">{{ label }}</a>
+    {% endfor %}
+  </aside>
+  <div class="admin-content">
+    <h1 style="font-size:22px;font-weight:900;margin-bottom:20px">Settings</h1>
+    <div id="save-msg" style="display:none;background:rgba(39,174,96,0.1);border:1px solid rgba(39,174,96,0.3);border-radius:8px;padding:10px;font-size:13px;color:#27AE60;margin-bottom:16px">Settings saved.</div>
+
+    <!-- Maintenance -->
+    <div class="card" style="padding:20px;margin-bottom:16px">
+      <div class="flex-between">
+        <div>
+          <div style="font-size:14px;font-weight:800">Maintenance Mode</div>
+          <div class="text-muted text-xs">When ON, users see maintenance page</div>
+        </div>
+        <button class="btn {{ 'btn-red' if maintenance else 'btn-ghost' }}" id="maint-btn" onclick="toggleMaintenance()">{{ 'Disable' if maintenance else 'Enable' }}</button>
+      </div>
+    </div>
+
+    <!-- Payment Settings -->
+    <div class="card" style="padding:20px;margin-bottom:16px">
+      <div style="font-size:14px;font-weight:800;margin-bottom:14px">Payment Settings</div>
+      <div class="form-group">
+        <label class="form-label">Payment Mode</label>
+        <select id="pay-mode">
+          <option value="manual" {{ 'selected' if payment_settings.get('mode')=='manual' else '' }}>Manual Pay</option>
+          <option value="razorpay" {{ 'selected' if payment_settings.get('mode')=='razorpay' else '' }}>Razorpay</option>
+          <option value="both" {{ 'selected' if payment_settings.get('mode')=='both' else '' }}>Both</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">UPI ID (for manual)</label>
+        <input type="text" id="upi-id" value="{{ payment_settings.get('upi_id','') }}" placeholder="yourname@upi">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Razorpay Key ID</label>
+        <input type="text" id="rz-key" value="{{ payment_settings.get('razorpay_key','') }}" placeholder="rzp_live_...">
+      </div>
+      <button class="btn btn-primary btn-block" onclick="savePayment()">Save Payment Settings</button>
+    </div>
+
+    <!-- Social Media -->
+    <div class="card" style="padding:20px;margin-bottom:16px">
+      <div style="font-size:14px;font-weight:800;margin-bottom:14px">Social Media Links</div>
+      {% for key, label in [('telegram','Telegram'),('discord','Discord'),('youtube','YouTube'),('instagram','Instagram'),('facebook','Facebook'),('twitter','Twitter/X'),('tiktok','TikTok'),('whatsapp','WhatsApp')] %}
+      <div class="form-group">
+        <label class="form-label">{{ label }}</label>
+        <input type="url" id="social-{{ key }}" value="{{ social_settings.get(key,'') }}" placeholder="https://...">
+      </div>
+      {% endfor %}
+      <button class="btn btn-primary btn-block" onclick="saveSocials()">Save Social Links</button>
+    </div>
+
+    <!-- Image Hosting -->
+    <div class="card" style="padding:20px">
+      <div style="font-size:14px;font-weight:800;margin-bottom:14px">Image Hosting API</div>
+      <div class="form-group">
+        <label class="form-label">Provider</label>
+        <select id="img-provider">
+          <option value="firebase" {{ 'selected' if image_settings.get('provider','firebase')=='firebase' else '' }}>Firebase Storage (default)</option>
+          <option value="imgbb" {{ 'selected' if image_settings.get('provider')=='imgbb' else '' }}>ImgBB</option>
+          <option value="cloudinary" {{ 'selected' if image_settings.get('provider')=='cloudinary' else '' }}>Cloudinary</option>
+          <option value="imgur" {{ 'selected' if image_settings.get('provider')=='imgur' else '' }}>Imgur</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">API Key</label>
+        <input type="text" id="img-key" value="{{ image_settings.get('api_key','') }}" placeholder="Your API key">
+      </div>
+      <button class="btn btn-primary btn-block" onclick="saveImageHosting()">Save Image Hosting</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function toggleMaintenance() {
+  const res = await apiPost("/admin/api/toggle-maintenance", {});
+  if (res.success) { showToast(`Maintenance ${res.maintenance?'enabled':'disabled'}`,"info"); location.reload(); }
+}
+async function savePayment() {
+  const data = { mode: document.getElementById("pay-mode").value, upi_id: document.getElementById("upi-id").value, razorpay_key: document.getElementById("rz-key").value };
+  const res = await apiPost("/admin/api/save-settings", { section: "payment", data });
+  if (res.success) { showToast("Payment settings saved","success"); document.getElementById("save-msg").style.display="block"; }
+}
+async function saveSocials() {
+  const data = {};
+  ["telegram","discord","youtube","instagram","facebook","twitter","tiktok","whatsapp"].forEach(k => {
+    data[k] = document.getElementById(`social-${k}`).value.trim();
+  });
+  const res = await apiPost("/admin/api/save-settings", { section: "socials", data });
+  if (res.success) showToast("Social links saved","success");
+}
+async function saveImageHosting() {
+  const data = { provider: document.getElementById("img-provider").value, api_key: document.getElementById("img-key").value };
+  const res = await apiPost("/admin/api/save-settings", { section: "image_hosting", data });
+  if (res.success) showToast("Image hosting saved","success");
+}
+</script>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Leaderboard{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container" style="padding-top:16px">
+    <div class="flex-between" style="margin-bottom:16px">
+      <h1 style="font-size:20px;font-weight:900">Leaderboard</h1>
+      <span class="badge badge-gold">Top Players</span>
+    </div>
+
+    <!-- Period Tabs -->
+    <div style="overflow-x:auto;margin-bottom:16px">
+      <div style="display:flex;gap:8px;min-width:max-content">
+        {% for p in ['daily','weekly','monthly','alltime'] %}
+        <a href="/leaderboard/?period={{ p }}&game={{ game }}" class="btn {{ 'btn-primary' if period==p else 'btn-ghost' }} btn-sm">{{ p | title }}</a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Top 3 Podium -->
+    {% if entries|length >= 3 %}
+    <div style="display:flex;align-items:flex-end;justify-content:center;gap:12px;margin-bottom:24px;padding:20px;background:var(--bg-card);border-radius:var(--radius-lg);border:1px solid var(--border)">
+      <!-- 2nd -->
+      <div style="text-align:center;flex:1">
+        <div style="width:52px;height:52px;margin:0 auto 8px;border-radius:50%;background:var(--bg-secondary);border:2px solid var(--silver)">
+          <svg viewBox="0 0 52 52" width="52" height="52"><rect width="52" height="52" rx="26" fill="#0D1B3E"/><circle cx="26" cy="20" r="10" fill="#8A9BB0" opacity="0.7"/></svg>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--silver)">2nd</div>
+        <div style="font-size:12px;font-weight:800;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ entries[1].display_name or 'Player' }}</div>
+        <div style="font-size:11px;color:var(--text-muted)">{{ entries[1].score }}</div>
+        <div style="height:60px;background:var(--silver);opacity:0.3;border-radius:4px 4px 0 0;margin-top:8px;width:60px;margin-left:auto;margin-right:auto"></div>
+      </div>
+      <!-- 1st -->
+      <div style="text-align:center;flex:1">
+        <div style="margin-bottom:4px">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="var(--gold)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div style="width:64px;height:64px;margin:0 auto 8px;border-radius:50%;background:var(--bg-secondary);border:3px solid var(--gold)">
+          <svg viewBox="0 0 64 64" width="64" height="64"><rect width="64" height="64" rx="32" fill="#0D1B3E"/><circle cx="32" cy="24" r="12" fill="#C9A84C" opacity="0.7"/></svg>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--gold)">1st</div>
+        <div style="font-size:13px;font-weight:900">{{ entries[0].display_name or 'Player' }}</div>
+        <div style="font-size:12px;color:var(--gold);font-weight:700">{{ entries[0].score }}</div>
+        <div style="height:80px;background:var(--gold);opacity:0.3;border-radius:4px 4px 0 0;margin-top:8px;width:60px;margin-left:auto;margin-right:auto"></div>
+      </div>
+      <!-- 3rd -->
+      <div style="text-align:center;flex:1">
+        <div style="width:52px;height:52px;margin:0 auto 8px;border-radius:50%;background:var(--bg-secondary);border:2px solid #CD7F32">
+          <svg viewBox="0 0 52 52" width="52" height="52"><rect width="52" height="52" rx="26" fill="#0D1B3E"/><circle cx="26" cy="20" r="10" fill="#CD7F32" opacity="0.7"/></svg>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:#CD7F32">3rd</div>
+        <div style="font-size:12px;font-weight:800;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ entries[2].display_name or 'Player' }}</div>
+        <div style="font-size:11px;color:var(--text-muted)">{{ entries[2].score }}</div>
+        <div style="height:44px;background:#CD7F32;opacity:0.3;border-radius:4px 4px 0 0;margin-top:8px;width:60px;margin-left:auto;margin-right:auto"></div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Full List -->
+    {% if entries %}
+    <div class="card">
+      {% for entry in entries %}
+      <div class="lb-row">
+        <div class="lb-pos {{ 'gold' if entry.position==1 else 'silver' if entry.position==2 else 'bronze' if entry.position==3 else '' }}">
+          {% if entry.position <= 3 %}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="{{ '#FFD700' if entry.position==1 else '#C0C0C0' if entry.position==2 else '#CD7F32' }}"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          {% else %}
+          {{ entry.position }}
+          {% endif %}
+        </div>
+        <div class="lb-avatar">
+          {% if entry.avatar %}
+          <img src="{{ entry.avatar }}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+          {% else %}
+          <svg viewBox="0 0 36 36" width="36" height="36"><rect width="36" height="36" rx="18" fill="#0D1B3E"/><circle cx="18" cy="14" r="7" fill="#1A6FFF" opacity="0.7"/></svg>
+          {% endif %}
+        </div>
+        <div class="lb-info">
+          <div class="lb-name">{{ entry.display_name or 'Player' }}</div>
+          <div class="lb-sub">{{ entry.rank or 'Bronze' }}</div>
+        </div>
+        <div class="lb-score">{{ "{:,}".format(entry.score | int) }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="card text-center" style="padding:40px">
+      <p class="text-muted">No entries yet for this period. Start playing to get on the board!</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

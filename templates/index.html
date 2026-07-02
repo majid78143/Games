@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container fade-in" style="padding-top:16px">
+
+    {% if current_user %}
+    <!-- VIP Banner -->
+    <div class="vip-banner">
+      <div class="vip-badge-wrap">
+        <svg viewBox="0 0 60 70"><use href="#vip-{{ current_user.vip_level or 1 }}"/></svg>
+      </div>
+      <div class="vip-info">
+        <div class="vip-label">Your Status</div>
+        <div class="vip-name">VIP{{ current_user.vip_level or 0 }}</div>
+        <div class="vip-xp">{{ current_user.rank }} Rank</div>
+      </div>
+      <a href="/profile/" class="btn btn-outline btn-sm">View Profile</a>
+    </div>
+    {% endif %}
+
+    <!-- Banner Slider -->
+    {% if banners %}
+    <div class="banner-slider" style="margin-bottom:20px">
+      {% for banner in banners %}
+      <div class="banner-slide">
+        {% if banner.image %}
+        <img src="{{ banner.image }}" alt="{{ banner.title }}">
+        {% else %}
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--blue-deep),var(--bg-primary));display:flex;align-items:center;justify-content:center">
+          <span style="font-size:18px;font-weight:900;color:var(--gold)">{{ banner.title }}</span>
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+      <div class="banner-dots"></div>
+    </div>
+    {% else %}
+    <!-- Default Hero -->
+    <div class="hero" style="margin-bottom:20px">
+      <div class="badge badge-blue" style="margin-bottom:10px">Premium Gaming Platform</div>
+      <h1 class="hero-title">Play. Win. <span class="text-gold">Earn VIP</span> Status.</h1>
+      <p class="hero-subtitle">Join thousands of players. Compete in events, climb the leaderboard, and unlock exclusive VIP rewards.</p>
+      {% if not current_user %}
+      <div style="display:flex;gap:10px">
+        <a href="/auth/register" class="btn btn-primary">Start Playing</a>
+        <a href="/auth/login" class="btn btn-ghost">Sign In</a>
+      </div>
+      {% else %}
+      <a href="/games/" class="btn btn-primary">Browse Games</a>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Quick Stats -->
+    {% if current_user %}
+    <div class="grid-4" style="margin-bottom:20px">
+      <div class="stat-box">
+        <div class="stat-value text-gold">{{ current_user.vip_level or 0 }}</div>
+        <div class="stat-label">VIP Level</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value">{{ current_user.rank or 'Bronze' }}</div>
+        <div class="stat-label">Rank</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value text-blue">&#8377;{{ "{:,.0f}".format(current_user.balance) }}</div>
+        <div class="stat-label">Balance</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value text-red">Live</div>
+        <div class="stat-label">Status</div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Games -->
+    <div class="section">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="3"/><path d="M6 12h4M8 10v4M15 12h.01M17 12h.01"/></svg>
+        Popular Games
+        <a href="/games/" class="btn btn-ghost btn-sm" style="margin-left:auto;font-size:11px">View All</a>
+      </div>
+      <div class="grid-4">
+        {% set featured_games = [("prediction","Prediction","PREDICT"),("crash","Crash","CRASH"),("dice","Dice","DICE"),("wheel","Wheel","WHEEL"),("mines","Mines","MINES"),("coin","Coin Flip","FLIP"),("slot","Slot","SLOTS"),("casino","Casino","CASINO")] %}
+        {% for gid, gname, glabel in featured_games %}
+        <a href="/games/{{ gid }}" class="game-card" style="text-decoration:none">
+          <div class="game-card-img">
+            <svg viewBox="0 0 64 64"><use href="#game-{{ gid }}"/></svg>
+          </div>
+          <div class="game-card-body">
+            <div class="game-card-name">{{ gname }}</div>
+            <div class="game-card-info">Min bet: &#8377;10</div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Active Events -->
+    {% if events %}
+    <div class="section">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Active Events
+        <a href="/events/" class="btn btn-ghost btn-sm" style="margin-left:auto;font-size:11px">See All</a>
+      </div>
+      {% for event in events[:2] %}
+      <div class="event-card">
+        <div class="event-card-header">
+          <span class="event-type-badge badge-{{ 'blue' if event.type=='daily' else 'red' if event.type=='festival' else 'gold' }}">{{ event.type | title }}</span>
+          <div class="event-timer">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <span data-countdown="{{ event.end_at }}">Loading...</span>
+          </div>
+        </div>
+        <div class="event-card-body">
+          <div class="event-title">{{ event.title }}</div>
+          <div class="event-desc">{{ event.description[:80] }}{% if event.description|length > 80 %}...{% endif %}</div>
+          <div class="flex-between">
+            <span class="badge badge-gold">Reward: {{ event.reward }}</span>
+            <a href="/events/{{ event.id }}" class="btn btn-primary btn-sm">Join Now</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- VIP Info -->
+    <div class="section">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        VIP Program
+      </div>
+      <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px">
+        {% for i in range(1,11) %}
+        <div style="flex-shrink:0;width:70px;text-align:center">
+          <div style="width:52px;height:60px;margin:0 auto 6px">
+            <svg viewBox="0 0 60 70" width="52" height="60"><use href="#vip-{{ i }}"/></svg>
+          </div>
+          <div style="font-size:9px;font-weight:700;color:var(--gold)">VIP{{ i }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Ranks -->
+    <div class="section">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>
+        Rank System
+      </div>
+      <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px">
+        {% for rank in ['bronze','silver','gold','platinum','diamond','master','elite','champion','legend'] %}
+        <div style="flex-shrink:0;width:70px;text-align:center">
+          <div style="width:44px;height:44px;margin:0 auto 4px">
+            <svg viewBox="0 0 56 56" width="44" height="44"><use href="#rank-{{ rank }}"/></svg>
+          </div>
+          <div style="font-size:9px;font-weight:700;color:var(--text-muted)">{{ rank | title }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- 19AI Support -->
+    <div class="card card-gold" style="margin-bottom:20px;display:flex;align-items:center;gap:14px">
+      <div style="width:48px;height:48px;flex-shrink:0">
+        <img src="/static/svg/logo_ai.svg" alt="19AI" style="width:100%;height:100%">
+      </div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:800">19AI Support</div>
+        <div class="text-muted text-xs">Ask anything - available 24/7 in English & Hindi</div>
+      </div>
+      <a href="/support/" class="btn btn-gold btn-sm">Chat Now</a>
+    </div>
+
+    <!-- Footer links -->
+    <div style="text-align:center;padding:16px 0;border-top:1px solid var(--border);margin-top:8px">
+      <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--text-muted)">
+        <a href="/support/" style="color:var(--text-muted)">Support</a>
+        <a href="/events/" style="color:var(--text-muted)">Events</a>
+        <a href="/leaderboard/" style="color:var(--text-muted)">Leaderboard</a>
+        <a href="/creator/" style="color:var(--text-muted)">Creators</a>
+        <a href="/settings/" style="color:var(--text-muted)">Settings</a>
+      </div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:10px">© 2024 19GameVIP. All rights reserved.</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

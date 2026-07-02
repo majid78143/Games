@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Creator Events{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container" style="padding-top:16px">
+    <div class="flex-between" style="margin-bottom:16px">
+      <h1 style="font-size:20px;font-weight:900">My Events</h1>
+      <a href="/creator/dashboard" class="btn btn-ghost btn-sm">Dashboard</a>
+    </div>
+    {% if events %}
+    {% for event in events %}
+    <div class="event-card" style="margin-bottom:12px">
+      <div class="event-card-header">
+        <span class="badge badge-blue">Creator Event</span>
+        <span class="badge {{ 'badge-green' if event.active else 'badge-gray' }}">{{ 'Active' if event.active else 'Ended' }}</span>
+      </div>
+      <div class="event-card-body">
+        <div class="event-title">{{ event.title }}</div>
+        <div class="event-desc">{{ event.description }}</div>
+        <div class="badge badge-gold">{{ event.reward }}</div>
+      </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="card text-center" style="padding:40px">
+      <p class="text-muted">No creator events yet. Contact admin to set up a creator event.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

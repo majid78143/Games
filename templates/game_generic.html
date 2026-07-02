@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% block title %}{{ game.name }} - 19GameVIP{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container" style="padding-top:16px">
+
+    <div class="flex-between" style="margin-bottom:16px">
+      <h1 style="font-size:20px;font-weight:900">{{ game.name }}</h1>
+      <a href="/games/" class="btn btn-ghost btn-sm">Back</a>
+    </div>
+
+    <!-- Game Area -->
+    <div class="game-area">
+      <!-- Result Display -->
+      <div class="result-display" id="result-area">
+        <div style="font-size:12px;color:var(--text-muted);letter-spacing:1px;margin-bottom:8px;text-transform:uppercase">{{ game.name }}</div>
+        <div id="result-icon" style="font-size:64px;font-weight:900;color:var(--blue-primary);margin:8px 0">?</div>
+        <div id="result-label" style="font-size:14px;font-weight:700;color:var(--text-muted)">Place your bet to play</div>
+      </div>
+
+      <!-- Bet Controls -->
+      <div class="bet-controls">
+        <div class="bet-label">Bet Amount (&#8377;)</div>
+        <div class="bet-input-row">
+          <input type="number" id="bet" value="{{ game.min_bet }}" min="{{ game.min_bet }}" max="{{ game.max_bet }}"
+            style="font-size:18px;font-weight:900;text-align:center"
+            oninput="updateBetInfo()">
+          <button class="btn btn-ghost" onclick="halveBet()">1/2</button>
+          <button class="btn btn-ghost" onclick="doubleBet()">2x</button>
+        </div>
+        <div class="bet-presets">
+          {% for amt in [10, 50, 100, 500, 1000] %}
+          {% if amt >= game.min_bet and amt <= game.max_bet %}
+          <div class="bet-preset" onclick="setBet({{ amt }})">&#8377;{{ amt }}</div>
+          {% endif %}
+          {% endfor %}
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:6px;text-align:center">
+          Min: &#8377;{{ game.min_bet }} &nbsp;|&nbsp; Max: &#8377;{{ game.max_bet }}
+        </div>
+      </div>
+
+      <div id="msg-box" style="text-align:center;padding:12px;font-size:14px;font-weight:700;border-radius:8px;margin:12px 0;display:none"></div>
+
+      <div class="flex-between" style="margin-top:12px">
+        <div style="font-size:13px;color:var(--text-muted)">
+          Balance: <span style="color:var(--gold);font-weight:700">&#8377;<span id="bal">{{ "{:,.2f}".format(profile.get('balance', 0)) }}</span></span>
+        </div>
+        <button class="btn btn-primary btn-lg" id="play-btn" onclick="placeBet()">
+          Play &#8377;<span id="bet-display">{{ game.min_bet }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid-2" style="gap:10px;margin-top:16px">
+      <div class="card" style="padding:14px;text-align:center">
+        <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Total Games</div>
+        <div style="font-size:22px;font-weight:900;color:var(--blue-primary)">{{ history|length }}</div>
+      </div>
+      <div class="card" style="padding:14px;text-align:center">
+        <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Wins</div>
+        <div style="font-size:22px;font-weight:900;color:#27AE60">{{ history|selectattr('won')|list|length }}</div>
+      </div>
+    </div>
+
+    <!-- History -->
+    {% if history %}
+    <div class="section" style="margin-top:16px">
+      <div class="section-title">Recent History</div>
+      <div class="history-list">
+        {% for h in history %}
+        <div class="history-item" style="background:{{ 'rgba(39,174,96,0.08)' if h.won else 'rgba(232,25,44,0.08)' }};border-color:{{ 'rgba(39,174,96,0.3)' if h.won else 'rgba(232,25,44,0.3)' }}">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:{{ '#27AE60' if h.won else 'var(--red-primary)' }}">
+              {{ 'WIN' if h.won else 'LOSS' }}
+            </div>
+            <div style="font-size:11px;color:var(--text-muted)">Bet: &#8377;{{ "{:,.0f}".format(h.bet) }}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:13px;font-weight:900;color:{{ '#27AE60' if h.won else 'var(--red-primary)' }}">
+              {{ '+' if h.won else '' }}&#8377;{{ "{:,.2f}".format(h.payout - h.bet if h.won else -h.bet) }}
+            </div>
+            <div style="font-size:11px;color:var(--text-muted)">{{ h.result }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const MIN_BET = {{ game.min_bet }};
+const MAX_BET = {{ game.max_bet }};
+const GAME_ID = "{{ game.id }}";
+let isPlaying = false;
+
+function setBet(v) {
+  document.getElementById('bet').value = v;
+  updateBetInfo();
+}
+function halveBet() {
+  const el = document.getElementById('bet');
+  el.value = Math.max(MIN_BET, Math.floor(parseFloat(el.value) / 2));
+  updateBetInfo();
+}
+function doubleBet() {
+  const el = document.getElementById('bet');
+  el.value = Math.min(MAX_BET, Math.floor(parseFloat(el.value) * 2));
+  updateBetInfo();
+}
+function updateBetInfo() {
+  const v = parseFloat(document.getElementById('bet').value) || MIN_BET;
+  document.getElementById('bet-display').textContent = v.toLocaleString('en-IN');
+}
+
+function showMsg(text, type) {
+  const el = document.getElementById('msg-box');
+  el.textContent = text;
+  el.style.display = 'block';
+  el.style.background = type === 'win' ? 'rgba(39,174,96,0.15)' : type === 'error' ? 'rgba(232,25,44,0.15)' : 'rgba(26,111,255,0.15)';
+  el.style.color = type === 'win' ? '#27AE60' : type === 'error' ? 'var(--red-primary)' : 'var(--blue-primary)';
+}
+
+function animateResult(won, result, payout) {
+  const icon = document.getElementById('result-icon');
+  const label = document.getElementById('result-label');
+  icon.style.transition = 'transform 0.3s ease, color 0.3s ease';
+  icon.style.transform = 'scale(1.3)';
+  icon.style.color = won ? '#27AE60' : 'var(--red-primary)';
+  icon.textContent = won ? 'W' : 'L';
+  label.textContent = result;
+  label.style.color = won ? '#27AE60' : 'var(--red-primary)';
+  setTimeout(() => { icon.style.transform = 'scale(1)'; }, 300);
+}
+
+async function placeBet() {
+  if (isPlaying) return;
+  const bet = parseFloat(document.getElementById('bet').value);
+  if (!bet || bet < MIN_BET || bet > MAX_BET) {
+    showMsg(`Bet must be between ₹${MIN_BET} and ₹${MAX_BET}`, 'error');
+    return;
+  }
+  isPlaying = true;
+  const btn = document.getElementById('play-btn');
+  btn.disabled = true;
+  btn.textContent = 'Playing...';
+  document.getElementById('result-icon').textContent = '...';
+  document.getElementById('result-label').textContent = 'Rolling...';
+  document.getElementById('msg-box').style.display = 'none';
+
+  try {
+    const res = await fetch(`/games/api/play/${GAME_ID}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ bet })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      showMsg(data.error || 'Error placing bet', 'error');
+      document.getElementById('result-icon').textContent = '!';
+      document.getElementById('result-label').textContent = data.error || 'Error';
+    } else {
+      animateResult(data.payout > bet, data.result, data.result);
+      const net = data.payout - bet;
+      showMsg(
+        data.payout > bet
+          ? `You won ₹${data.payout.toLocaleString('en-IN', {minimumFractionDigits:2})}! (+₹${net.toLocaleString('en-IN', {minimumFractionDigits:2})})`
+          : `You lost ₹${bet.toLocaleString('en-IN', {minimumFractionDigits:2})}`,
+        data.payout > bet ? 'win' : 'error'
+      );
+      document.getElementById('bal').textContent = parseFloat(data.balance).toLocaleString('en-IN', {minimumFractionDigits:2});
+    }
+  } catch (e) {
+    showMsg('Network error. Please try again.', 'error');
+    document.getElementById('result-icon').textContent = '!';
+    document.getElementById('result-label').textContent = 'Network error';
+  } finally {
+    isPlaying = false;
+    btn.disabled = false;
+    btn.innerHTML = `Play &#8377;<span id="bet-display">${parseFloat(document.getElementById('bet').value).toLocaleString('en-IN')}</span>`;
+  }
+}
+
+updateBetInfo();
+</script>
+{% endblock %}

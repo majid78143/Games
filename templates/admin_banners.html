@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Admin - Banners{% endblock %}
+{% block content %}
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    {% for href, label in [('/admin/','Dashboard'),('/admin/users','Users'),('/admin/payments','Payments'),('/admin/banners','Banners'),('/admin/events','Events'),('/admin/creators','Creators'),('/admin/coupons','Coupons'),('/admin/settings','Settings'),('/admin/logs','Logs')] %}
+    <a href="{{ href }}" class="admin-link {{ 'active' if request.path == href else '' }}">{{ label }}</a>
+    {% endfor %}
+  </aside>
+  <div class="admin-content">
+    <div class="flex-between" style="margin-bottom:20px">
+      <h1 style="font-size:22px;font-weight:900">Banners</h1>
+      <button class="btn btn-primary" onclick="openModal('create-banner-modal')">Add Banner</button>
+    </div>
+    {% if banners %}
+    <div class="grid-2" style="gap:12px">
+      {% for banner in banners %}
+      <div class="card" style="padding:0;overflow:hidden">
+        {% if banner.image %}
+        <img src="{{ banner.image }}" style="width:100%;aspect-ratio:16/5;object-fit:cover">
+        {% else %}
+        <div style="background:var(--bg-secondary);aspect-ratio:16/5;display:flex;align-items:center;justify-content:center;font-weight:700">{{ banner.title }}</div>
+        {% endif %}
+        <div style="padding:12px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:13px;font-weight:700">{{ banner.title }}</span>
+          <span class="badge {{ 'badge-green' if banner.active else 'badge-gray' }}">{{ 'Active' if banner.active else 'Inactive' }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="card text-center" style="padding:32px"><p class="text-muted">No banners yet.</p></div>
+    {% endif %}
+  </div>
+</div>
+<div class="modal-overlay" id="create-banner-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add Banner</div>
+      <button class="modal-close" onclick="closeModal('create-banner-modal')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="form-group"><label class="form-label">Banner Title</label><input type="text" id="b-title" placeholder="Banner title"></div>
+    <div class="form-group"><label class="form-label">Image URL</label><input type="url" id="b-image" placeholder="https://..."></div>
+    <div class="form-group"><label class="form-label">Link URL (optional)</label><input type="url" id="b-link" placeholder="https://..."></div>
+    <button class="btn btn-primary btn-block" onclick="createBanner()">Add Banner</button>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function createBanner() {
+  const data = { title: document.getElementById("b-title").value.trim(), image: document.getElementById("b-image").value.trim(), link: document.getElementById("b-link").value.trim() };
+  if (!data.title) { showToast("Enter banner title","error"); return; }
+  const res = await apiPost("/admin/api/create-banner", data);
+  if (res.success) { showToast("Banner added!","success"); closeModal("create-banner-modal"); location.reload(); }
+}
+</script>
+{% endblock %}
