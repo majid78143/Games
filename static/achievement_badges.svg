@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <!-- First Win -->
+  <symbol id="ach-first-win" viewBox="0 0 56 56">
+    <circle cx="28" cy="28" r="26" fill="#1A6FFF" stroke="#C9A84C" stroke-width="2"/>
+    <text x="28" y="24" text-anchor="middle" font-family="Arial" font-size="16">1st</text>
+    <text x="28" y="38" text-anchor="middle" font-family="Arial" font-size="8" fill="#C9A84C" font-weight="700">WIN</text>
+  </symbol>
+  <!-- High Roller -->
+  <symbol id="ach-high-roller" viewBox="0 0 56 56">
+    <circle cx="28" cy="28" r="26" fill="#E8192C" stroke="#FFD700" stroke-width="2"/>
+    <text x="28" y="32" text-anchor="middle" font-family="Arial" font-size="9" fill="white" font-weight="700">HIGH</text>
+    <text x="28" y="44" text-anchor="middle" font-family="Arial" font-size="7" fill="#FFD700">ROLLER</text>
+    <path d="M20 20 L24 24 L28 16 L32 24 L36 20" stroke="#FFD700" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  </symbol>
+  <!-- Streak Master -->
+  <symbol id="ach-streak" viewBox="0 0 56 56">
+    <circle cx="28" cy="28" r="26" fill="#F39C12" stroke="white" stroke-width="2"/>
+    <path d="M28 8 C28 8 22 18 28 24 C34 18 28 8 28 8" fill="#FF6B00"/>
+    <path d="M28 24 C28 24 20 34 28 42" fill="#FF6B00"/>
+    <text x="28" y="50" text-anchor="middle" font-family="Arial" font-size="6" fill="white" font-weight="700">STREAK</text>
+  </symbol>
+  <!-- VIP Climber -->
+  <symbol id="ach-vip-climber" viewBox="0 0 56 56">
+    <circle cx="28" cy="28" r="26" fill="#9B59B6" stroke="#C9A84C" stroke-width="2"/>
+    <path d="M20 38 L24 30 L28 20 L32 30 L36 38" fill="#C9A84C"/>
+    <text x="28" y="52" text-anchor="middle" font-family="Arial" font-size="5" fill="white" font-weight="700">VIP CLIMBER</text>
+  </symbol>
+  <!-- Social Star -->
+  <symbol id="ach-social" viewBox="0 0 56 56">
+    <circle cx="28" cy="28" r="26" fill="#1A6FFF" stroke="#FFD700" stroke-width="2"/>
+    <polygon points="28,14 31,23 41,23 33,29 36,38 28,32 20,38 23,29 15,23 25,23" fill="#FFD700"/>
+  </symbol>
+  <!-- Event Champion -->
+  <symbol id="ach-event-champ" viewBox="0 0 56 56">
+    <circle cx="28" cy="28" r="26" fill="#E74C3C" stroke="#C9A84C" stroke-width="2"/>
+    <path d="M18 20 L22 20 L22 35 L28 38 L34 35 L34 20 L38 20 L38 16 L18 16 Z" fill="#C9A84C" opacity="0.9"/>
+    <rect x="24" y="38" width="8" height="3" rx="1" fill="#C9A84C"/>
+    <text x="28" y="52" text-anchor="middle" font-family="Arial" font-size="5" fill="white" font-weight="700">CHAMPION</text>
+  </symbol>
+  <!-- Diamond Hands -->
+  <symbol id="ach-diamond" viewBox="0 0 56 56">
+    <defs><linearGradient id="dh-g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#B9F2FF"/><stop offset="100%" stop-color="#1A6FFF"/></linearGradient></defs>
+    <circle cx="28" cy="28" r="26" fill="url(#dh-g)" stroke="#00BFFF" stroke-width="2"/>
+    <path d="M28 10 L40 24 L28 44 L16 24 Z" fill="white" opacity="0.5"/>
+    <path d="M28 10 L40 24 L28 24 Z" fill="white" opacity="0.7"/>
+    <text x="28" y="52" text-anchor="middle" font-family="Arial" font-size="5" fill="white" font-weight="700">DIAMOND</text>
+  </symbol>
+  <!-- Legend Status -->
+  <symbol id="ach-legend" viewBox="0 0 56 56">
+    <defs><linearGradient id="leg-g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1A6FFF"/><stop offset="100%" stop-color="#E8192C"/></linearGradient></defs>
+    <circle cx="28" cy="28" r="26" fill="url(#leg-g)" stroke="#FFD700" stroke-width="3"/>
+    <text x="28" y="24" text-anchor="middle" font-family="Arial" font-size="9" fill="#FFD700" font-weight="900">LEGEND</text>
+    <path d="M18 26 L22 30 L28 24 L34 30 L38 26" stroke="#FFD700" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <text x="28" y="40" text-anchor="middle" font-family="Arial" font-size="6" fill="white">STATUS</text>
+  </symbol>
+</svg>
